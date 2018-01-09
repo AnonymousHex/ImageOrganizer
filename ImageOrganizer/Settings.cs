@@ -12,8 +12,9 @@ namespace ImageOrganizer
 	public class Settings : ObservableObject
 	{
 		private const string SettingsFolderName = "ImageOrganizer";
-
+		private const string TagsFileName = "tags";
 		private const string SettingsFileName = "settings";
+
 
 		/// <summary>
 		/// The full path to the settings file.
@@ -22,14 +23,32 @@ namespace ImageOrganizer
 		{
 			get
 			{
-				var dataFolder = Environment.GetFolderPath(
-					Environment.SpecialFolder.CommonApplicationData, 
-					Environment.SpecialFolderOption.Create);
+				if (string.IsNullOrEmpty(SettingsFolderPath))
+				{
+					var dataFolder = Environment.GetFolderPath(
+						Environment.SpecialFolder.CommonApplicationData,
+						Environment.SpecialFolderOption.Create);
 
-				Directory.CreateDirectory(Path.Combine(dataFolder, SettingsFolderName));
-				return Path.Combine(dataFolder, SettingsFolderName, SettingsFileName);
+					SettingsFolderPath = Path.Combine(dataFolder, SettingsFolderName);
+					Directory.CreateDirectory(SettingsFolderPath);
+				}
+
+				return Path.Combine(SettingsFolderPath, SettingsFileName);
 			}
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public static string TagsFilePath
+		{
+			get { return Path.Combine(SettingsFolderPath, TagsFileName); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public static string SettingsFolderPath { get; private set; }
 
 		private static Settings _default;
 		

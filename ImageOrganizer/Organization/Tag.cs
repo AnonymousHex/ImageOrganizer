@@ -6,6 +6,7 @@ namespace ImageOrganizer.Organization
 	public class Tag : ObservableObject
 	{
 		private Command _removeCommand;
+		private Command _addToImageCommand;
 
 		public Tag(string name)
 		{
@@ -39,5 +40,28 @@ namespace ImageOrganizer.Organization
 		/// 
 		/// </summary>
 		public event EventHandler RemoveRequested;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Command AddToImageCommand
+		{
+			get { return _addToImageCommand ?? (_addToImageCommand = new Command(AddToImage)); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void AddToImage()
+		{
+			var handler = AddToImageRequested;
+			if (handler != null)
+				handler.Invoke(this, new EventArgs());
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public event EventHandler AddToImageRequested;
 	}
 }

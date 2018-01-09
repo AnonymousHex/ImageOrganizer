@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Xml.Serialization;
 using ImageOrganizer.Organization;
 using ImageOrganizer.Presentation;
 using ImageOrganizer.Presentation.SelectFolder;
@@ -18,12 +19,13 @@ namespace ImageOrganizer
 		private Command _rightCommand;
 		private Command _newTagCommand;
 
+		private Dictionary<string, List<string>> _imageTags;
+		private readonly ObservableCollection<Tag> _tags;
 		private string _folderPath;
 		private List<string> _files;
-		private readonly ObservableCollection<Tag> _tags;
 		private int _currentIndex;
 		private string _newTagName;
-		private readonly Dictionary<string, List<string>> _imageTags;
+		private string _tagSearch;
 
 		public MainWindowContext()
 		{
@@ -44,7 +46,7 @@ namespace ImageOrganizer
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="routedEventArgs"></param>
-		private static void MainWindowOnLoaded(object sender, RoutedEventArgs routedEventArgs)
+		private void MainWindowOnLoaded(object sender, RoutedEventArgs routedEventArgs)
 		{
 			var window = (Window) sender;
 			window.Loaded -= MainWindowOnLoaded;
@@ -54,6 +56,7 @@ namespace ImageOrganizer
 			window.WindowState = Settings.Default.WindowState;
 			window.Width = Settings.Default.WindowWidth;
 			window.Height = Settings.Default.WindowHeight;
+			LoadTags();
 		}
 
 		/// <summary>
@@ -61,7 +64,7 @@ namespace ImageOrganizer
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="cancelEventArgs"></param>
-		private static void MainWindowOnClosed(object sender, EventArgs cancelEventArgs)
+		private void MainWindowOnClosed(object sender, EventArgs cancelEventArgs)
 		{
 			var window = (Window)sender;
 			window.Closed -= MainWindowOnClosed;
@@ -71,8 +74,25 @@ namespace ImageOrganizer
 			Settings.Default.WindowWidth = window.Width;
 			Settings.Default.WindowHeight = window.Height;
 			Settings.Default.SaveSettings();
+			SaveTags();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public string TagSearch
+		{
+			get { return _tagSearch; }
+			set
+			{
+				Set("TagSearch", ref _tagSearch, value);
+				RaisePropertyChanged("Tags");
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public string FolderPath
 		{
 			get { return _folderPath; }
@@ -107,7 +127,12 @@ namespace ImageOrganizer
 
 		public ObservableCollection<Tag> Tags
 		{
-			get { return _tags; }
+			get
+			{
+				return string.IsNullOrWhiteSpace(_tagSearch) ? 
+					_tags :
+					new ObservableCollection<Tag>(_tags.Where(t => t.Name.Contains(_tagSearch)));
+			}
 		}
 
 		public Image CurrentImage
@@ -194,24 +219,98 @@ namespace ImageOrganizer
 		{
 			var tag = new Tag(_newTagName);
 
-			tag.RemoveRequested += TagOnRemoveRequested;
-			Tags.Add(tag);
+			RegisterTagEvents(tag, true);
+			_tags.Add(tag);
+			RaisePropertyChanged("Tags");
 			NewTagName = null;
 
 			if (_files.Any() == false)
 				return;
 
-			if (_imageTags.ContainsKey(_files[_currentIndex]) == false)
-				_imageTags[_files[_currentIndex]] = new List<string>{_newTagName};
-			else if (_imageTags[_files[_currentIndex]].Contains(_newTagName) == false)
-				_imageTags[_files[_currentIndex]].Add(_newTagName);
+			AddTagToImage(_newTagName);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		void AddTagToImage(string name)
+		{
+			if (_imageTags.ContainsKey(_files[_currentIndex]) == false)
+				_imageTags[_files[_currentIndex]] = new List<string> { name };
+			else if (_imageTags[_files[_currentIndex]].Contains(name) == false)
+				_imageTags[_files[_currentIndex]].Add(name);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="eventArgs"></param>
 		private void TagOnRemoveRequested(object sender, EventArgs eventArgs)
 		{
 			var tag = (Tag) sender;
-			Tags.Remove(tag);
-			tag.RemoveRequested -= TagOnRemoveRequested;
+			_tags.Remove(tag);
+			RaisePropertyChanged("Tags");
+			RegisterTagEvents(tag, false);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="eventArgs"></param>
+		void TagOnAddToImageRequested(object sender, EventArgs eventArgs)
+		{
+			var tag = (Tag)sender;
+			AddTagToImage(tag.Name);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <param name="register"></param>
+		void RegisterTagEvents(Tag tag, bool register)
+		{
+			if (register)
+			{
+				tag.RemoveRequested += TagOnRemoveRequested;
+				tag.AddToImageRequested += TagOnAddToImageRequested;
+			}
+			else
+			{
+				tag.RemoveRequested -= TagOnRemoveRequested;
+				tag.AddToImageRequested -= TagOnAddToImageRequested;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void SaveTags()
+		{
+			using (var fs = new FileStream(Settings.TagsFilePath, FileMode.OpenOrCreate))
+			{
+				var serializer = new XmlSerializer(_imageTags.GetType());
+				serializer.Serialize(fs, _imageTags);
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void LoadTags()
+		{
+			var path = Settings.TagsFilePath;
+			if (File.Exists(path) == false)
+				return;
+
+			using (var fs = new FileStream(path, FileMode.Open))
+			{
+				var serializer = new XmlSerializer(_imageTags.GetType());
+				_imageTags = (Dictionary<string, List<string>>) serializer.Deserialize(fs);
+			}
 		}
 	}
 }
