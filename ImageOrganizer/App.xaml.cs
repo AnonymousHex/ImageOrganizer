@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ImageOrganizer
@@ -13,5 +8,20 @@ namespace ImageOrganizer
 	/// </summary>
 	public partial class App : Application
 	{
+		public App()
+		{
+			InitializeComponent();
+		}
+
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
+
+			//set the theme
+			Resources.MergedDictionaries.Add(new ResourceDictionary
+			{
+				Source = new Uri("pack://application:,,,/ImageOrganizer;component/Themes/Dark/Theme.xaml")
+			});
+		}
 	}
 }

@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="clr-namespace:ImageOrganizer.Themes">
+
+	<!--UniformWindow-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowBackgroundBrush}" Color="#FF1C1C1C"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowBorderBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowTitleBarBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowActionBarBrush}" Color="#FF141414"/>
+
+	<!--UniformButton-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.CloseButtonBackgroundBrush}" Color="#FF802121"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowButtonBackgroundBrush}" Color="#FF2D2D2D"/>
+	
+	<Style TargetType="TextBlock">
+		<Setter Property="Foreground" Value="#FFF1F1F1"/>
+	</Style>
+	
+</ResourceDictionary>
