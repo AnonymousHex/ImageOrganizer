@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformButton.xaml"/>
+		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformTextBox.xaml"/>
+		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformWindowButton.xaml"/>
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformWindow.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 	

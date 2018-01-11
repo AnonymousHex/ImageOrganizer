@@ -6,7 +6,9 @@
 		xmlns:presentation="clr-namespace:ImageOrganizer.Presentation"
 		xmlns:imageOrganizer="clr-namespace:ImageOrganizer"
 		xmlns:controls="clr-namespace:ImageOrganizer.Controls"
+		xmlns:themes="clr-namespace:ImageOrganizer.Themes"
 		MinWidth="333"
+		MinHeight="300"
         Title="{x:Static properties:Resources.ImageOrganizer}" 
 		Height="830"
 		Width="1530">
@@ -18,7 +20,37 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</controls:UniformWindow.Resources>
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="44"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="200"/>
+			<ColumnDefinition/>
+			<ColumnDefinition MinWidth="120"/>
+		</Grid.ColumnDefinitions>
+		<Border Grid.Row="0"
+				Grid.ColumnSpan="3"
+				Background="{DynamicResource {x:Static themes:AssetResourceKeys.WindowTitleBarBrush}}"/>
+		<controls:UniformTextBox Grid.Row="0"
+								 Grid.Column="1"
+		                         Margin="0,12,2,4"
+		                         HorizontalAlignment="Stretch"/>
+		<controls:UniformTextBox Grid.Row="0"
+		                         Grid.Column="2"
+								 Margin="0,12,2,4"
+								 HorizontalAlignment="Stretch"/>
+		<GridSplitter Grid.Column="0"
+					  Grid.Row="0"
+					  Grid.RowSpan="2"/>
 
-		<!--<imageOrganizer:ImageView></imageOrganizer:ImageView>-->
+
+		<GridSplitter Grid.Column="1"
+		              Grid.Row="0"
+		              Grid.RowSpan="2"/>
+		
+	</Grid>
     </controls:UniformWindow>
 

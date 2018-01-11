@@ -22,5 +22,23 @@ namespace ImageOrganizer.Controls
 			get { return (SolidColorBrush)GetValue(HoveredBackgroundProperty); }
 			set { SetValue(HoveredBackgroundProperty, value); }
 		}
+
+		public static readonly DependencyProperty PressedBackgroundProperty = DependencyProperty.Register(
+			"PressedBackground", typeof(SolidColorBrush), typeof(UniformWindowButton), new PropertyMetadata(default(SolidColorBrush)));
+
+		public SolidColorBrush PressedBackground
+		{
+			get { return (SolidColorBrush)GetValue(PressedBackgroundProperty); }
+			set { SetValue(PressedBackgroundProperty, value); }
+		}
+
+		public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+			"Icon", typeof(ImageSource), typeof(UniformWindowButton), new PropertyMetadata(default(ImageSource)));
+
+		public ImageSource Icon
+		{
+			get { return (ImageSource) GetValue(IconProperty); }
+			set { SetValue(IconProperty, value); }
+		}
 	}
 }

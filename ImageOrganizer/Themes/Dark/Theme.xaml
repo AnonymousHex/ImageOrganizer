@@ -8,12 +8,34 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowTitleBarBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowActionBarBrush}" Color="#FF141414"/>
 
-	<!--UniformButton-->
+	<!--UniformWindowButton-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.CloseButtonBackgroundBrush}" Color="#FF802121"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowButtonBackgroundBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.CloseButtonPressedBackgroundBrush}" Color="#FF632828"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowButtonPressedBackgroundBrush}" Color="#FF232323"/>
+
+	<!--UniformTextBox-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxBackgroundBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxBorderBrush}" Color="#FF1C1C1C"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxDisabledBackgroundBrush}" Color="#FF1C1C1C"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxDisabledBorderBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxReadOnlyBackgroundBrush}" Color="#FF212121"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxReadOnlyBorderBrush}" Color="#FF191919"/>
+
+	<!--All Controls-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformForegroundBrush}" Color="#FFF1F1F1"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformDisabledForegroundBrush}" Color="#FF727272"/>
 	
 	<Style TargetType="TextBlock">
-		<Setter Property="Foreground" Value="#FFF1F1F1"/>
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformForegroundBrush}}"/>
+	</Style>
+
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}" Color="#FF141414"/>
+	
+	<Style TargetType="GridSplitter">
+		<Setter Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}}"/>
+		<Setter Property="Width" Value="3"/>
+		<Setter Property="ShowsPreview" Value="True"/>
 	</Style>
 	
 </ResourceDictionary>
