@@ -22,14 +22,14 @@ namespace ImageOrganizer
 		private Dictionary<string, List<string>> _imageTags;
 		private readonly ObservableCollection<Tag> _tags;
 		private string _folderPath;
-		private List<string> _files;
+		private List<ImageItem> _files;
 		private int _currentIndex;
 		private string _newTagName;
 		private string _tagSearch;
 
 		public MainWindowContext()
 		{
-			_files = new List<string>();
+			_files = new List<ImageItem>();
 			_tags = new ObservableCollection<Tag>();
 			_imageTags = new Dictionary<string, List<string>>();
 
@@ -119,7 +119,7 @@ namespace ImageOrganizer
 			get { return _newTagCommand ?? (_newTagCommand = new Command(MakeNewTag, CanMakeNewTag)); }
 		}
 
-		public List<string> Files
+		public List<ImageItem> Files
 		{
 			get { return _files; }
 			set { Set("Files", ref _files, value); }
@@ -133,11 +133,6 @@ namespace ImageOrganizer
 					_tags :
 					new ObservableCollection<Tag>(_tags.Where(t => t.Name.Contains(_tagSearch)));
 			}
-		}
-
-		public Image CurrentImage
-		{
-			get { return new Image(_files[_currentIndex]); }
 		}
 
 		public int CurrentIndex
@@ -172,9 +167,11 @@ namespace ImageOrganizer
 			if (dlg.ShowDialog() == false)
 				return;
 
-			Files = new DirectoryInfo(dlg.FolderName).EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png"))
-				.Select(p => p.FullName).ToList();
+			Files = new DirectoryInfo(dlg.FolderName)
+				.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase))
+				.AsParallel()
+				.Select(p => new ImageItem(p.FullName)).ToList();
 
 			FolderPath = dlg.FolderName;
 			_currentIndex = 0;
@@ -236,10 +233,10 @@ namespace ImageOrganizer
 		/// <param name="name"></param>
 		void AddTagToImage(string name)
 		{
-			if (_imageTags.ContainsKey(_files[_currentIndex]) == false)
-				_imageTags[_files[_currentIndex]] = new List<string> { name };
-			else if (_imageTags[_files[_currentIndex]].Contains(name) == false)
-				_imageTags[_files[_currentIndex]].Add(name);
+			if (_imageTags.ContainsKey(_files[_currentIndex].FilePath) == false)
+				_imageTags[_files[_currentIndex].FilePath] = new List<string> { name };
+			else if (_imageTags[_files[_currentIndex].FilePath].Contains(name) == false)
+				_imageTags[_files[_currentIndex].FilePath].Add(name);
 		}
 
 		/// <summary>

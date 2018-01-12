@@ -109,5 +109,23 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _gridSplitterBackgroundBrush ?? (_gridSplitterBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "GridSplitterBackgroundBrush")); }
 		}
+
+		private static ResourceKey _resizeGripBackgroundBrush;
+		public static ResourceKey ResizeGripBackgroundBrush
+		{
+			get { return _resizeGripBackgroundBrush ?? (_resizeGripBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ResizeGripBackgroundBrush")); }
+		}
+
+		private static ResourceKey _imageItemHoveredBackgroundBrush;
+		public static ResourceKey ImageItemHoveredBackgroundBrush
+		{
+			get { return _imageItemHoveredBackgroundBrush ?? (_imageItemHoveredBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ImageItemHoveredBackgroundBrush")); }
+		}
+
+		private static ResourceKey _imageItemPressedBackgroundBrush;
+		public static ResourceKey ImageItemPressedBackgroundBrush
+		{
+			get { return _imageItemPressedBackgroundBrush ?? (_imageItemPressedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ImageItemPressedBackgroundBrush")); }
+		}
 	}
 }

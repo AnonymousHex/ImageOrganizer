@@ -36,16 +36,40 @@
 				Background="{DynamicResource {x:Static themes:AssetResourceKeys.WindowTitleBarBrush}}"/>
 		<controls:UniformTextBox Grid.Row="0"
 								 Grid.Column="1"
+								 Text="{Binding FolderPath}"
+								 IsReadOnly="True"
 		                         Margin="0,12,2,4"
 		                         HorizontalAlignment="Stretch"/>
 		<controls:UniformTextBox Grid.Row="0"
 		                         Grid.Column="2"
 								 Margin="0,12,2,4"
 								 HorizontalAlignment="Stretch"/>
+		<Button Command="{Binding BrowseCommand}"
+		        Grid.Column="0"
+				Grid.Row="1"
+		        Style="{StaticResource UniformButtonStyle}"
+		        Content="Browse..."/>
 		<GridSplitter Grid.Column="0"
 					  Grid.Row="0"
 					  Grid.RowSpan="2"/>
 
+		<ScrollViewer VerticalScrollBarVisibility="Auto"
+		              Grid.Column="1"
+		              Grid.Row="1">
+			<ItemsControl ItemsSource="{Binding Files}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel ItemWidth="112"
+						           ItemHeight="120"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<presentation:ImageItemView Margin="5"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
 
 		<GridSplitter Grid.Column="1"
 		              Grid.Row="0"

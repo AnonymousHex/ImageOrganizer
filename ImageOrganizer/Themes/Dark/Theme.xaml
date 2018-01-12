@@ -26,12 +26,16 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformForegroundBrush}" Color="#FFF1F1F1"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformDisabledForegroundBrush}" Color="#FF727272"/>
 	
+	<!--Misc Controls-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ResizeGripBackgroundBrush}" Color="#FFF1F1F1"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemHoveredBackgroundBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemPressedBackgroundBrush}" Color="#FF003A65"/>
+	
 	<Style TargetType="TextBlock">
 		<Setter Property="Foreground" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformForegroundBrush}}"/>
 	</Style>
 
-	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}" Color="#FF141414"/>
-	
 	<Style TargetType="GridSplitter">
 		<Setter Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}}"/>
 		<Setter Property="Width" Value="3"/>

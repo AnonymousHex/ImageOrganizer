@@ -69,6 +69,7 @@
 							      Background="{DynamicResource {x:Static themes:AssetResourceKeys.WindowActionBarBrush}}"
 							      HorizontalAlignment="Stretch">
 								<ResizeGrip x:Name="WindowResizeGrip"
+											Foreground="{DynamicResource {x:Static themes:AssetResourceKeys.ResizeGripBackgroundBrush}}"
 								            HorizontalAlignment="Right"
 								            VerticalAlignment="Bottom"
 								            Visibility="Collapsed"

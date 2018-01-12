@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="ImageOrganizer.Presentation.ImageItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:themes="clr-namespace:ImageOrganizer.Themes"
+             mc:Ignorable="d">
+	<Grid x:Name="BaseGrid">
+		<Border x:Name="HoverBorder"
+				Visibility="Hidden"
+		       Background="{DynamicResource {x:Static themes:AssetResourceKeys.ImageItemHoveredBackgroundBrush}}"/>
+		<Border x:Name="MouseDownBorder"
+		        Visibility="Hidden"
+				Background="{DynamicResource {x:Static themes:AssetResourceKeys.ImageItemPressedBackgroundBrush}}"/>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<VisualStateManager.VisualStateGroups>
+				<VisualStateGroup>
+					<VisualState x:Name="MouseDownState">
+						<Storyboard>
+							<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MouseDownBorder"
+														   Storyboard.TargetProperty="Visibility">
+								<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+							</ObjectAnimationUsingKeyFrames>
+						</Storyboard>
+					</VisualState>
+					<VisualState x:Name="MouseOverState">
+						<Storyboard>
+							<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverBorder" 
+														   Storyboard.TargetProperty="Visibility">
+								<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+							</ObjectAnimationUsingKeyFrames>
+						</Storyboard>
+					</VisualState>
+					<VisualState x:Name="NormalState"/>
+				</VisualStateGroup>
+			</VisualStateManager.VisualStateGroups>
+
+			<Image VerticalAlignment="Center"
+				   Margin="5,0,5,0"
+				   Source="{Binding ThumbNail}"
+				   Grid.Row="0"/>
+			<TextBlock Grid.Row="1"
+				       Margin="4,0,4,8"
+					   HorizontalAlignment="Center"
+				       Text="{Binding FileName}"/>
+			
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="MouseEnter" SourceName="BaseGrid">
+					<ei:GoToStateAction StateName="MouseOverState"/>
+				</i:EventTrigger>
+				<i:EventTrigger EventName="MouseDown" SourceName="BaseGrid">
+					<ei:GoToStateAction StateName="MouseDownState"/>
+				</i:EventTrigger>
+				<i:EventTrigger EventName="MouseUp" SourceName="BaseGrid">
+					<ei:GoToStateAction StateName="MouseOverState"/>
+				</i:EventTrigger>
+				<i:EventTrigger EventName="MouseLeave" SourceName="BaseGrid">
+					<ei:GoToStateAction StateName="NormalState"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</Grid>
+	</Grid>
+</UserControl>
