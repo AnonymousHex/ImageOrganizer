@@ -12,7 +12,7 @@ using ImageOrganizer.Presentation.SelectFolder;
 
 namespace ImageOrganizer
 {
-	public class MainWindowContext : ObservableObject
+	public class MainWindowContext : ObservableObject, IImageHost
 	{
 		private Command _browseCommand;
 		private Command _leftCommand;
@@ -26,6 +26,7 @@ namespace ImageOrganizer
 		private int _currentIndex;
 		private string _newTagName;
 		private string _tagSearch;
+		private ImageItem _selectedImage;
 
 		public MainWindowContext()
 		{
@@ -171,7 +172,7 @@ namespace ImageOrganizer
 				.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
 				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase))
 				.AsParallel()
-				.Select(p => new ImageItem(p.FullName)).ToList();
+				.Select(p => new ImageItem(p.FullName, this)).ToList();
 
 			FolderPath = dlg.FolderName;
 			_currentIndex = 0;
@@ -308,6 +309,24 @@ namespace ImageOrganizer
 				var serializer = new XmlSerializer(_imageTags.GetType());
 				_imageTags = (Dictionary<string, List<string>>) serializer.Deserialize(fs);
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="item"></param>
+		public void SelectImage(ImageItem item)
+		{
+			SelectedImage = item;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ImageItem SelectedImage
+		{
+			get { return _selectedImage; }
+			set { Set("SelectedImage", ref _selectedImage, value); }
 		}
 	}
 }

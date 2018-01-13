@@ -57,6 +57,7 @@
 				</i:EventTrigger>
 				<i:EventTrigger EventName="MouseDown" SourceName="BaseGrid">
 					<ei:GoToStateAction StateName="MouseDownState"/>
+					<i:InvokeCommandAction Command="{Binding SelectCommand}"/>
 				</i:EventTrigger>
 				<i:EventTrigger EventName="MouseUp" SourceName="BaseGrid">
 					<ei:GoToStateAction StateName="MouseOverState"/>

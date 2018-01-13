@@ -127,5 +127,41 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _imageItemPressedBackgroundBrush ?? (_imageItemPressedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ImageItemPressedBackgroundBrush")); }
 		}
+
+		private static ResourceKey _uniformButtonBackgroundBrush;
+		public static ResourceKey UniformButtonBackgroundBrush
+		{
+			get { return _uniformButtonBackgroundBrush ?? (_uniformButtonBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonBorderBrush;
+		public static ResourceKey UniformButtonBorderBrush
+		{
+			get { return _uniformButtonBorderBrush ?? (_uniformButtonBorderBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonBorderBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonHoverBorderBrush;
+		public static ResourceKey UniformButtonHoverBorderBrush
+		{
+			get { return _uniformButtonHoverBorderBrush ?? (_uniformButtonHoverBorderBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonHoverBorderBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonHoverBackgroundBrush;
+		public static ResourceKey UniformButtonHoverBackgroundBrush
+		{
+			get { return _uniformButtonHoverBackgroundBrush ?? (_uniformButtonHoverBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonHoverBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonPressedBackgroundBrush;
+		public static ResourceKey UniformButtonPressedBackgroundBrush
+		{
+			get { return _uniformButtonPressedBackgroundBrush ?? (_uniformButtonPressedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonPressedBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonPressedBorderBrush;
+		public static ResourceKey UniformButtonPressedBorderBrush
+		{
+			get { return _uniformButtonPressedBorderBrush ?? (_uniformButtonPressedBorderBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonPressedBorderBrush")); }
+		}
 	}
 }

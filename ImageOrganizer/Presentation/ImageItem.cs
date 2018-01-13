@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageOrganizer.Organization;
 
 namespace ImageOrganizer.Presentation
 {
@@ -9,11 +10,14 @@ namespace ImageOrganizer.Presentation
 	/// </summary>
 	public class ImageItem : ObservableObject
 	{
+		private readonly IImageHost _host;
 		private ImageSource _thumb;
 		private readonly string _filePath;
+		private Command _selectCommand;
 
-		public ImageItem(string filePath)
+		public ImageItem(string filePath, IImageHost host)
 		{
+			_host = host;
 			_filePath = filePath;
 			CreateThumbnail(_filePath);
 		}
@@ -63,6 +67,14 @@ namespace ImageOrganizer.Presentation
 		/// <summary>
 		/// 
 		/// </summary>
+		public Command SelectCommand
+		{
+			get { return _selectCommand ?? (_selectCommand = new Command(Select)); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public ImageSource ThumbNail
 		{
 			get { return _thumb; }
@@ -82,6 +94,14 @@ namespace ImageOrganizer.Presentation
 		public string FilePath
 		{
 			get { return _filePath; }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void Select()
+		{
+			_host.SelectImage(this);
 		}
 	}
 }

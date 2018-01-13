@@ -21,6 +21,14 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxDisabledBorderBrush}" Color="#FF2D2D2D"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxReadOnlyBackgroundBrush}" Color="#FF212121"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TextBoxReadOnlyBorderBrush}" Color="#FF191919"/>
+	
+	<!--UniformButton-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonBackgroundBrush}" Color="#FF212121"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonBorderBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonHoverBackgroundBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonHoverBorderBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBorderBrush}" Color="#FF1C1C1C"/>
 
 	<!--All Controls-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformForegroundBrush}" Color="#FFF1F1F1"/>

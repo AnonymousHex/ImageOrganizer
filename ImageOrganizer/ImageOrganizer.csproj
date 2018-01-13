@@ -59,11 +59,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\UniformTextBox.cs" />
+    <Compile Include="Controls\UniformButton.cs" />
     <Compile Include="Controls\UniformWindowButton.cs" />
     <Compile Include="Controls\UniformWindow.cs" />
     <Compile Include="ImageView.xaml.cs">
       <DependentUpon>ImageView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Organization\IImageHost.cs" />
     <Compile Include="Presentation\ImageItem.cs" />
     <Compile Include="Presentation\ImageItemView.xaml.cs">
       <DependentUpon>ImageItemView.xaml</DependentUpon>
@@ -96,6 +98,10 @@
     <Page Include="Presentation\Controls\UniformTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\Controls\UniformButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Presentation\Controls\UniformWindowButton.xaml">
       <SubType>Designer</SubType>

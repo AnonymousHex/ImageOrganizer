@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:ImageOrganizer.Controls"
+                    xmlns:themes="clr-namespace:ImageOrganizer.Themes">
+
+	<!-- Button -->
+	<Style TargetType="{x:Type controls:UniformButton}">
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformForegroundBrush}}"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonBackgroundBrush}}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonBorderBrush}}"/>
+		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="SnapsToDevicePixels" Value="true" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type controls:UniformButton}">
+					<Border x:Name="Border"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							Background="{TemplateBinding Background}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+						<ContentPresenter HorizontalAlignment="Center"
+							              VerticalAlignment="Center"
+							              RecognizesAccessKey="True"/>
+					</Border>
+					
+					<!--Declaration order of triggers matters here.  Pressed needs to be last because the mouse is still over the control when it is pressed,
+					so if it isn't placed after MouseOver, it won't have a visual effect because it gets overridden-->
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonHoverBorderBrush}}"/>
+							<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonHoverBackgroundBrush}}"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonPressedBorderBrush}}"/>
+							<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>
