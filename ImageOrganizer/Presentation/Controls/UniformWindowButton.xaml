@@ -17,9 +17,6 @@
 							BorderBrush="{TemplateBinding BorderBrush}"
 							Background="{TemplateBinding Background}"
 							BorderThickness="{TemplateBinding BorderThickness}">
-						<!--<ContentPresenter HorizontalAlignment="Center"
-							              VerticalAlignment="Center"
-							              RecognizesAccessKey="True"/>-->
 						<Image Source="{TemplateBinding Icon}"
 						       HorizontalAlignment="Center"
 						       VerticalAlignment="Center"
