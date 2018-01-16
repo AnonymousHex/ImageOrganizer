@@ -57,7 +57,7 @@
 		              ResizeDirection="Columns"
 					  Grid.RowSpan="2"/>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto"
+		<controls:UniformScrollViewer VerticalScrollBarVisibility="Auto"
 		              Grid.Column="1"
 		              Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Files}">
@@ -73,7 +73,7 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
-		</ScrollViewer>
+		</controls:UniformScrollViewer>
 
 		<GridSplitter Grid.Column="1"
 		              Grid.Row="0"
