@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ImageOrganizer.Organization;
 using ImageOrganizer.Presentation;
@@ -12,24 +16,28 @@ using ImageOrganizer.Presentation.SelectFolder;
 
 namespace ImageOrganizer
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class MainWindowContext : ObservableObject, IImageHost
 	{
 		private Command _browseCommand;
-		private Command _leftCommand;
-		private Command _rightCommand;
 		private Command _newTagCommand;
+		private Command _testCrashCommand;
+		private Command<double> _handleScrollChangedCommand;
 
 		private Dictionary<string, List<string>> _imageTags;
 		private readonly ObservableCollection<Tag> _tags;
 		private string _folderPath;
 		private List<ImageItem> _files;
-		private int _currentIndex;
 		private string _newTagName;
 		private string _tagSearch;
 		private ImageItem _selectedImage;
+		private ImageSource _selectedImageSource;
 
 		public MainWindowContext()
 		{
+			Files = new ObservableCollection<ImageItem>();
 			_files = new List<ImageItem>();
 			_tags = new ObservableCollection<Tag>();
 			_imageTags = new Dictionary<string, List<string>>();
@@ -105,25 +113,32 @@ namespace ImageOrganizer
 			get { return _browseCommand ?? (_browseCommand = new Command(BrowseForFolder)); }
 		}
 
-		public Command LeftCommand
-		{
-			get { return _leftCommand ?? (_leftCommand = new Command(PreviousImage, CanGoBack)); }
-		}
-
-		public Command RightCommand
-		{
-			get { return _rightCommand ?? (_rightCommand = new Command(NextImage, CanMoveNext)); }
-		}
-
 		public Command NewTagCommand
 		{
 			get { return _newTagCommand ?? (_newTagCommand = new Command(MakeNewTag, CanMakeNewTag)); }
 		}
 
-		public List<ImageItem> Files
+		public Command TestCrashCommand
 		{
-			get { return _files; }
-			set { Set("Files", ref _files, value); }
+			get { return _testCrashCommand ?? (_testCrashCommand = new Command(TestCrash)); }
+		}
+
+		public Command<double> HandleScrollChangedCommand
+		{
+			get { return _handleScrollChangedCommand ?? (_handleScrollChangedCommand = new Command<double>(HandleScrollChanged)); }
+		}
+
+		private static void TestCrash()
+		{
+			throw new Exception("This is a test of the crash handling functionality.");
+		}
+
+		public ObservableCollection<ImageItem> Files
+		{
+			get;
+			private set;
+			//get { return _files; }
+			//set { Set("Files", ref _files, value); }
 		}
 
 		public ObservableCollection<Tag> Tags
@@ -133,16 +148,6 @@ namespace ImageOrganizer
 				return string.IsNullOrWhiteSpace(_tagSearch) ? 
 					_tags :
 					new ObservableCollection<Tag>(_tags.Where(t => t.Name.Contains(_tagSearch)));
-			}
-		}
-
-		public int CurrentIndex
-		{
-			get { return _currentIndex; }
-			set
-			{
-				Set("CurrentIndex", ref _currentIndex, value);
-				RaiseCanChangeImageChanged();
 			}
 		}
 
@@ -162,50 +167,112 @@ namespace ImageOrganizer
 		/// <summary>
 		/// 
 		/// </summary>
+		public ImageItem SelectedImage
+		{
+			get { return _selectedImage; }
+			set { Set("SelectedImage", ref _selectedImage, value); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ImageSource SelectedImageSource
+		{
+			get { return _selectedImageSource; }
+			set
+			{
+				Set("SelectedImageSource", ref _selectedImageSource, value);
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		void BrowseForFolder()
 		{
 			var dlg = new FolderSelectDialog();
 			if (dlg.ShowDialog() == false)
 				return;
 
-			Files = new DirectoryInfo(dlg.FolderName)
-				.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase))
-				.AsParallel()
-				.Select(p => new ImageItem(p.FullName, this)).ToList();
+			var t = new Thread(CreateImageItems);
+			t.Start(dlg.FolderName);
 
 			FolderPath = dlg.FolderName;
-			_currentIndex = 0;
 			RaiseCanChangeImageChanged();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="folderName"></param>
+		void CreateImageItems(object folderName)
+		{
+			var folder = (string) folderName;
+			int count = 0;
+			var files = new DirectoryInfo(folder)
+				.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase))
+				.AsParallel();
+
+
+			IEnumerator<FileInfo> enumerator = null;
+			try
+			{
+				enumerator = files.GetEnumerator();
+				while (true)
+				{
+					if (enumerator.MoveNext() == false)
+						break;
+
+					count++;
+					var info = enumerator.Current;
+					if (info == null)
+						continue;
+
+					//Files.Add(new ImageItem(info.FullName, this));
+					Application.Current.Dispatcher.Invoke(() => Files.Add(new ImageItem(info.FullName, this)));
+					if (count > 5)
+					{
+
+						//Application.Current.Dispatcher.Invoke(() => Files.Add(new ImageItem(info.FullName, this))));
+						count = 0;
+					}
+				}
+
+				//if (count < 0)
+
+			}
+			catch (Exception e)
+			{
+				Debugger.Break();
+			}
+			finally
+			{
+				if (enumerator != null)
+					enumerator.Dispose();
+			}
+
+			
+		}
+
+		void HandleScrollChanged(double verticalOffset)
+		{
+			//TODO create custom version of observable collection to only raise collection changed at certain times. (so we only dispatch a few times, but add every item)
+			//TODO determine if we're past prev max offset, if so create more images.  if not do nothing because we have them cached.
+			//TODO only load 50 or so images off the bat on a separate thread.  every time we scroll load some amount more until we don't have any left
+			//TODO image items should have placeholder thumbnail or color before thumbnail has been generated.
+			//TODO need list of folders accessed (save this) in left pane (clicking will load all images).
+			//TODO save out grid splitter configurations.
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		void RaiseCanChangeImageChanged()
 		{
 			RaisePropertyChanged("LeftCommand");
 			RaisePropertyChanged("RightCommand");
 			RaisePropertyChanged("CurrentImage");
-		}
-
-		bool CanGoBack()
-		{
-			return _currentIndex > 0;
-		}
-
-		void NextImage()
-		{
-			CurrentIndex++;
-			RaiseCanChangeImageChanged();
-		}
-
-		bool CanMoveNext()
-		{
-			return _currentIndex < _files.Count - 1;
-		}
-
-		void PreviousImage()
-		{
-			CurrentIndex--;
-			RaiseCanChangeImageChanged();
 		}
 
 		bool CanMakeNewTag()
@@ -234,10 +301,10 @@ namespace ImageOrganizer
 		/// <param name="name"></param>
 		void AddTagToImage(string name)
 		{
-			if (_imageTags.ContainsKey(_files[_currentIndex].FilePath) == false)
-				_imageTags[_files[_currentIndex].FilePath] = new List<string> { name };
-			else if (_imageTags[_files[_currentIndex].FilePath].Contains(name) == false)
-				_imageTags[_files[_currentIndex].FilePath].Add(name);
+			if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
+				_imageTags[_selectedImage.FilePath] = new List<string> { name };
+			else if (_imageTags[_selectedImage.FilePath].Contains(name) == false)
+				_imageTags[_selectedImage.FilePath].Add(name);
 		}
 
 		/// <summary>
@@ -318,15 +385,7 @@ namespace ImageOrganizer
 		public void SelectImage(ImageItem item)
 		{
 			SelectedImage = item;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public ImageItem SelectedImage
-		{
-			get { return _selectedImage; }
-			set { Set("SelectedImage", ref _selectedImage, value); }
+			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
 		}
 	}
 }

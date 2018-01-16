@@ -2,6 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:themes="clr-namespace:ImageOrganizer.Themes">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformScrollBar.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
 	<!--UniformWindow-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowBackgroundBrush}" Color="#FF1C1C1C"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.WindowBorderBrush}" Color="#FF141414"/>
@@ -29,6 +33,12 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonHoverBorderBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBorderBrush}" Color="#FF1C1C1C"/>
+
+	<!--ScrollBar-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarArrowButtonBackgroundBrush}" Color="#FF2D2D2D"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarArrowButtonHoveredBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarHoveredBackgroundBrush}" Color="#FF2D2D2D"/>
 
 	<!--All Controls-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformForegroundBrush}" Color="#FFF1F1F1"/>

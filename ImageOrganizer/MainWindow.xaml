@@ -12,14 +12,6 @@
         Title="{x:Static properties:Resources.ImageOrganizer}" 
 		Height="830"
 		Width="1530">
-
-	<controls:UniformWindow.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="Presentation/Styles.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</controls:UniformWindow.Resources>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -44,20 +36,28 @@
 		                         Grid.Column="2"
 								 Margin="0,12,2,4"
 								 HorizontalAlignment="Stretch"/>
-		<controls:UniformButton Command="{Binding BrowseCommand}"
-								Grid.Column="0"
-								Grid.Row="0"
-								HorizontalAlignment="Left"
-		                        Margin="0,12,2,4"
-								Height="Auto"
-								Style="{StaticResource UniformButtonStyle}"
-								Content="Browse"/>
+		<StackPanel Orientation="Horizontal"
+		            Grid.Column="0"
+		            Grid.Row="0">
+			<controls:UniformButton Command="{Binding BrowseCommand}"
+			                        HorizontalAlignment="Left"
+			                        Margin="0,12,2,4"
+			                        Height="Auto"
+			                        Content="Browse"/>
+			<controls:UniformButton Command="{Binding TestCrashCommand}"
+			                        HorizontalAlignment="Left"
+			                        Margin="0,12,2,4"
+			                        Height="Auto"
+			                        Content="Crash"/>
+		</StackPanel>
+		
 		<GridSplitter Grid.Column="0"
 					  Grid.Row="0"
 		              ResizeDirection="Columns"
 					  Grid.RowSpan="2"/>
 
-		<controls:UniformScrollViewer VerticalScrollBarVisibility="Auto"
+		<ScrollViewer VerticalScrollBarVisibility="Auto"
+					  x:Name="ScrollViewer"
 		              Grid.Column="1"
 		              Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Files}">
@@ -73,7 +73,13 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
-		</controls:UniformScrollViewer>
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="ScrollChanged">
+					<i:InvokeCommandAction Command="{Binding HandleScrollChangedCommand}"
+										   CommandParameter="{Binding VerticalOffset, ElementName=ScrollViewer}"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</ScrollViewer>
 
 		<GridSplitter Grid.Column="1"
 		              Grid.Row="0"
@@ -88,7 +94,7 @@
 			<Image  Grid.Row="0"
 			        VerticalAlignment="Center"
 			        HorizontalAlignment="Center"
-			        Source="{Binding Path=SelectedImage.ThumbNail}"/>
+			        Source="{Binding SelectedImageSource}"/>
 			<GridSplitter Grid.Row="0"
 						  ResizeDirection="Rows"/>
 			

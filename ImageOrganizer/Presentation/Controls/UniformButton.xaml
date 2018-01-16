@@ -9,6 +9,8 @@
 		<Setter Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonBackgroundBrush}}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonBorderBrush}}"/>
 		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="Width" Value="75"/>
+		<Setter Property="Height" Value="25"/>
 		<Setter Property="SnapsToDevicePixels" Value="true" />
 		<Setter Property="Template">
 			<Setter.Value>

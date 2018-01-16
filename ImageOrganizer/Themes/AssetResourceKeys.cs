@@ -163,5 +163,29 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _uniformButtonPressedBorderBrush ?? (_uniformButtonPressedBorderBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonPressedBorderBrush")); }
 		}
+
+		private static ResourceKey _scrollBarArrowButtonBackgroundBrush;
+		public static ResourceKey ScrollBarArrowButtonBackgroundBrush
+		{
+			get { return _scrollBarArrowButtonBackgroundBrush ?? (_scrollBarArrowButtonBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ScrollBarArrowButtonBackgroundBrush")); }
+		}
+
+		private static ResourceKey _scrollBarArrowButtonHoveredBackgroundBrush;
+		public static ResourceKey ScrollBarArrowButtonHoveredBackgroundBrush
+		{
+			get { return _scrollBarArrowButtonHoveredBackgroundBrush ?? (_scrollBarArrowButtonHoveredBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ScrollBarArrowButtonHoveredBackgroundBrush")); }
+		}
+
+		private static ResourceKey _scrollBarBackgroundBrush;
+		public static ResourceKey ScrollBarBackgroundBrush
+		{
+			get { return _scrollBarBackgroundBrush ?? (_scrollBarBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ScrollBarBackgroundBrush")); }
+		}
+
+		private static ResourceKey _scrollBarHoveredBackgroundBrush;
+		public static ResourceKey ScrollBarHoveredBackgroundBrush
+		{
+			get { return _scrollBarHoveredBackgroundBrush ?? (_scrollBarHoveredBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ScrollBarHoveredBackgroundBrush")); }
+		}
 	}
 }

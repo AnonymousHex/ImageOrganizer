@@ -3,19 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:properties="clr-namespace:ImageOrganizer.Properties"
-             xmlns:presentation="clr-namespace:ImageOrganizer.Presentation"
              mc:Ignorable="d">
 	
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="Presentation/Styles.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</UserControl.Resources>
 	<Grid>
-		<Grid.RowDefinitions>
+		<!--<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition MinHeight="200"/>
 			<RowDefinition Height="Auto"/>
@@ -23,7 +14,7 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<!--Parent Directory-->
+		--><!--Parent Directory--><!--
 		<Grid Margin="5"
 			Grid.Row="0">
 			<Grid.ColumnDefinitions>
@@ -41,7 +32,7 @@
 			        Content="Browse..."/>
 		</Grid>
 
-		<!--Files, Image, and Image Tags-->
+		--><!--Files, Image, and Image Tags--><!--
 		<Grid Grid.Row="1">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
@@ -61,17 +52,7 @@
 					 Grid.RowSpan="2">
 
 			</ListBox>
-			<Button Grid.Column="1"
-			        Grid.Row="0"
-					Margin="4,0,4,0"
-					VerticalAlignment="Center"
-					Command="{Binding LeftCommand}"
-					Style="{StaticResource ArrowButtonStyle}">
-				<TextBlock Text="{x:Static properties:Resources.LeftArrow}"
-				           FontSize="40"
-				           VerticalAlignment="Center"
-				           FontWeight="Bold"/>
-			</Button>
+		
 			<StackPanel DataContext="{Binding CurrentImage}"
 			            Grid.Row="0"
 						Grid.Column="2">
@@ -79,17 +60,6 @@
 						 HorizontalAlignment="Center"/>
 				<Image Source="{Binding Source}"/>
 			</StackPanel>
-			<Button Grid.Column="3"
-			        Grid.Row="0"
-			        Margin="4,0,4,0"
-			        VerticalAlignment="Center"
-			        Command="{Binding RightCommand}"
-			        Style="{StaticResource ArrowButtonStyle}">
-				<TextBlock Text="{x:Static properties:Resources.RightArrow}"
-						   FontSize="40"
-						   VerticalAlignment="Center"
-						   FontWeight="Bold"/>
-			</Button>
 
 			<StackPanel Grid.Row="1"
 						Margin="8,0,0,0"
@@ -111,18 +81,9 @@
 					         Text="{Binding TagSearch, UpdateSourceTrigger=PropertyChanged}"/>
 				</Grid>
 			</StackPanel>
-
-
 		</Grid>
-
-		<!--Splitter-->
-		<GridSplitter Grid.Row="2"
-					  VerticalAlignment="Center"
-		              HorizontalAlignment="Stretch"
-		              ShowsPreview="True"
-		              Height="5"/>
-
-		<!--Tag Searching-->
+		
+		--><!--Tag Searching--><!--
 		<StackPanel Grid.Row="3" Margin="4,8,4,4">
 			<TextBlock Text="All Tags"/>
 			<Separator Margin="0,4,0,4"/>
@@ -140,16 +101,16 @@
 			</Grid>
 		</StackPanel>
 
-		<!--Tags and Adding-->
+		--><!--Tags and Adding--><!--
 		<Grid Grid.Row="4">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
-			<!--<ScrollViewer HorizontalScrollBarVisibility="Auto"
+			--><!--<ScrollViewer HorizontalScrollBarVisibility="Auto"
 						  Grid.Row="0"
 						  VerticalAlignment="Center"
-						  VerticalScrollBarVisibility="Hidden">-->
+						  VerticalScrollBarVisibility="Hidden">--><!--
 				<ItemsControl ItemsSource="{Binding Tags}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -162,7 +123,7 @@
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
-			<!--</ScrollViewer>-->
+			--><!--</ScrollViewer>--><!--
 			<Grid Grid.Row="1"
 			      Margin="5,0,5,0">
 				<Grid.ColumnDefinitions>
@@ -178,6 +139,6 @@
 						Style="{StaticResource UniformButtonStyle}"
 						Command="{Binding NewTagCommand}"/>
 			</Grid>
-		</Grid>
+		</Grid>-->
 	</Grid>
 </UserControl>

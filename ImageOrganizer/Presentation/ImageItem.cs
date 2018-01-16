@@ -28,40 +28,43 @@ namespace ImageOrganizer.Presentation
 		/// <param name="path"></param>
 		void CreateThumbnail(string path)
 		{
-			var frame = 
-				BitmapDecoder.Create(new FileStream(path, FileMode.Open), BitmapCreateOptions.None, BitmapCacheOption.None)
-				.Frames[0];
-
-			var thumbnail = frame.Thumbnail;
-			if (thumbnail != null)
+			using (var stream = new FileStream(path, FileMode.Open))
 			{
-				_thumb = thumbnail;
-				return;
+				var frame =
+					BitmapDecoder.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.None)
+						.Frames[0];
+
+				BitmapSource thumbnail = frame.Thumbnail;
+				if (thumbnail != null)
+				{
+					_thumb = thumbnail;
+					return;
+				}
+
+				var transformedBitmap = new TransformedBitmap();
+				transformedBitmap.BeginInit();
+				transformedBitmap.Source = frame;
+
+				int pixelH = frame.PixelHeight;
+				int pixelW = frame.PixelWidth;
+
+				int decodeH = 100;
+				int decodeW = frame.PixelWidth * decodeH / pixelH;
+
+				double scaleX = decodeW / (double)pixelW;
+				double scaleY = decodeH / (double)pixelH;
+
+				TransformGroup transformGroup = new TransformGroup();
+
+				transformGroup.Children.Add(new ScaleTransform(scaleX, scaleY));
+				transformedBitmap.Transform = transformGroup;
+				transformedBitmap.EndInit();
+
+				WriteableBitmap writable = new WriteableBitmap(transformedBitmap);
+				writable.Freeze();
+
+				_thumb = writable;
 			}
-
-			var transformedBitmap = new TransformedBitmap();
-			transformedBitmap.BeginInit();
-			transformedBitmap.Source = frame;
-
-			int pixelH = frame.PixelHeight;
-			int pixelW = frame.PixelWidth;
-
-			int decodeH = 100;
-			int decodeW = frame.PixelWidth * decodeH / pixelH;
-
-			double scaleX = decodeW / (double)pixelW;
-			double scaleY = decodeH / (double)pixelH;
-
-			TransformGroup transformGroup = new TransformGroup();
-
-			transformGroup.Children.Add(new ScaleTransform(scaleX, scaleY));
-			transformedBitmap.Transform = transformGroup;
-			transformedBitmap.EndInit();
-
-			WriteableBitmap writable = new WriteableBitmap(transformedBitmap);
-			writable.Freeze();
-
-			_thumb = writable;
 		}
 
 		/// <summary>
