@@ -66,6 +66,8 @@
       <DependentUpon>ImageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Organization\IImageHost.cs" />
+    <Compile Include="Organization\ImageCreationHelper.cs" />
+    <Compile Include="Organization\ObservableImageCollection.cs" />
     <Compile Include="Presentation\ImageItem.cs" />
     <Compile Include="Presentation\ImageItemView.xaml.cs">
       <DependentUpon>ImageItemView.xaml</DependentUpon>

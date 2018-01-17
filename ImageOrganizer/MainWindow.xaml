@@ -49,6 +49,10 @@
 			                        Margin="0,12,2,4"
 			                        Height="Auto"
 			                        Content="Crash"/>
+			<TextBlock>
+				<Run Text="Images:"/>
+				<Run Text="{Binding Path=Files.Count, Mode=OneWay}"/>
+			</TextBlock>
 		</StackPanel>
 		
 		<GridSplitter Grid.Column="0"
@@ -57,7 +61,6 @@
 					  Grid.RowSpan="2"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto"
-					  x:Name="ScrollViewer"
 		              Grid.Column="1"
 		              Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Files}">
@@ -73,8 +76,9 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
+			
 			<i:Interaction.Triggers>
-				<i:EventTrigger EventName="ScrollChanged">
+				<i:EventTrigger EventName="MouseDown">
 					<i:InvokeCommandAction Command="{Binding HandleScrollChangedCommand}"
 										   CommandParameter="{Binding VerticalOffset, ElementName=ScrollViewer}"/>
 				</i:EventTrigger>

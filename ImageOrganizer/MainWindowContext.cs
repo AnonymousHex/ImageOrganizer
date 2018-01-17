@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,24 +20,32 @@ namespace ImageOrganizer
 	/// </summary>
 	public class MainWindowContext : ObservableObject, IImageHost
 	{
+		private const int MaxImagesPerCreation = 50;
+
 		private Command _browseCommand;
 		private Command _newTagCommand;
 		private Command _testCrashCommand;
 		private Command<double> _handleScrollChangedCommand;
 
 		private Dictionary<string, List<string>> _imageTags;
+		private readonly ObservableImageCollection _files;
 		private readonly ObservableCollection<Tag> _tags;
 		private string _folderPath;
-		private List<ImageItem> _files;
 		private string _newTagName;
 		private string _tagSearch;
 		private ImageItem _selectedImage;
 		private ImageSource _selectedImageSource;
 
+		private IEnumerable<FileInfo> _allFiles;
+		private IEnumerator<FileInfo> _enumerator;
+		private readonly object _imageCreationLock = new object();
+		private Thread _imageGenerationThread;
+		private int _imagesCreatedSinceLastEvent;
+		private bool _isCreatingImages;
+
 		public MainWindowContext()
 		{
-			Files = new ObservableCollection<ImageItem>();
-			_files = new List<ImageItem>();
+			_files = new ObservableImageCollection(true);
 			_tags = new ObservableCollection<Tag>();
 			_imageTags = new Dictionary<string, List<string>>();
 
@@ -133,19 +140,19 @@ namespace ImageOrganizer
 			throw new Exception("This is a test of the crash handling functionality.");
 		}
 
-		public ObservableCollection<ImageItem> Files
+		public ObservableImageCollection Files
 		{
-			get;
-			private set;
-			//get { return _files; }
-			//set { Set("Files", ref _files, value); }
+			get
+			{
+				return _files;
+			}
 		}
 
 		public ObservableCollection<Tag> Tags
 		{
 			get
 			{
-				return string.IsNullOrWhiteSpace(_tagSearch) ? 
+				return string.IsNullOrWhiteSpace(_tagSearch) ?
 					_tags :
 					new ObservableCollection<Tag>(_tags.Where(t => t.Name.Contains(_tagSearch)));
 			}
@@ -194,8 +201,8 @@ namespace ImageOrganizer
 			if (dlg.ShowDialog() == false)
 				return;
 
-			var t = new Thread(CreateImageItems);
-			t.Start(dlg.FolderName);
+			_imageGenerationThread = new Thread(CreateImageItems);
+			_imageGenerationThread.Start(dlg.FolderName);
 
 			FolderPath = dlg.FolderName;
 			RaiseCanChangeImageChanged();
@@ -204,65 +211,97 @@ namespace ImageOrganizer
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="folderName"></param>
-		void CreateImageItems(object folderName)
+		/// <param name="state"></param>
+		void CreateImageItems(object state)
 		{
-			var folder = (string) folderName;
-			int count = 0;
-			var files = new DirectoryInfo(folder)
-				.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(p => Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase))
-				.AsParallel();
+			_isCreatingImages = true;
 
-
-			IEnumerator<FileInfo> enumerator = null;
-			try
+			var path = (string) state;
+			if (string.IsNullOrEmpty(path) == false)
 			{
-				enumerator = files.GetEnumerator();
-				while (true)
+				_allFiles = new DirectoryInfo(path)
+					.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
+					.Where(p => p != null && Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase));
+
+				_enumerator = _allFiles.GetEnumerator();
+			}
+
+			CancellationTokenSource cts = new CancellationTokenSource();
+			int count = 0;
+			var waitHandles = new WaitHandle[MaxImagesPerCreation];
+
+			while (cts.IsCancellationRequested == false && count < MaxImagesPerCreation)
+			{
+				if (_enumerator.MoveNext() == false)
 				{
-					if (enumerator.MoveNext() == false)
-						break;
-
-					count++;
-					var info = enumerator.Current;
-					if (info == null)
-						continue;
-
-					//Files.Add(new ImageItem(info.FullName, this));
-					Application.Current.Dispatcher.Invoke(() => Files.Add(new ImageItem(info.FullName, this)));
-					if (count > 5)
-					{
-
-						//Application.Current.Dispatcher.Invoke(() => Files.Add(new ImageItem(info.FullName, this))));
-						count = 0;
-					}
+					cts.Cancel();
+					break;
 				}
 
-				//if (count < 0)
+				var info = _enumerator.Current;
+				if (info == null)
+					continue;
 
-			}
-			catch (Exception e)
-			{
-				Debugger.Break();
-			}
-			finally
-			{
-				if (enumerator != null)
-					enumerator.Dispose();
+				var waitHandle = new ManualResetEvent(false);
+				waitHandles[count] = waitHandle;
+				var helper = new ImageCreationHelper(info.FullName, CreateImageItem, waitHandle);
+				ThreadPool.QueueUserWorkItem(helper.Callback, helper);
+
+				count++;
 			}
 
-			
+			WaitHandle.WaitAll(waitHandles);
+
+			//raise the collection changed on any remaining files that have been created.
+			Files.OnAddedRange();
+
+			//if we cancelled it means there are no more files left.
+			if (cts.IsCancellationRequested)
+			{
+				_enumerator.Dispose();
+				_enumerator = null;
+			}
+
+			_isCreatingImages = false;
+		}
+
+		/// <summary>
+		/// Creates an image item and adds it to the collection of files.
+		/// This is designed to run on a background thread.
+		/// </summary>
+		/// <param name="state"></param>
+		void CreateImageItem(object state)
+		{
+			var helper = (ImageCreationHelper)state;
+
+			lock (_imageCreationLock)
+			{
+				_imagesCreatedSinceLastEvent++;
+				var raise = _imagesCreatedSinceLastEvent >= 10;
+				if (raise)
+					_imagesCreatedSinceLastEvent = 0;
+
+				Files.Add(new ImageItem(helper.FilePath, this), raise);
+			}
+
+			//flag this worker as finished.
+			helper.Handle.Set();
 		}
 
 		void HandleScrollChanged(double verticalOffset)
 		{
-			//TODO create custom version of observable collection to only raise collection changed at certain times. (so we only dispatch a few times, but add every item)
 			//TODO determine if we're past prev max offset, if so create more images.  if not do nothing because we have them cached.
-			//TODO only load 50 or so images off the bat on a separate thread.  every time we scroll load some amount more until we don't have any left
 			//TODO image items should have placeholder thumbnail or color before thumbnail has been generated.
 			//TODO need list of folders accessed (save this) in left pane (clicking will load all images).
 			//TODO save out grid splitter configurations.
+
+			if (_isCreatingImages || _enumerator == null)
+				return;
+
+			if (verticalOffset < 0.0)
+				return;
+
+			CreateImageItems("");
 		}
 
 		/// <summary>
@@ -289,7 +328,7 @@ namespace ImageOrganizer
 			RaisePropertyChanged("Tags");
 			NewTagName = null;
 
-			if (_files.Any() == false)
+			if (Files.Any() == false)
 				return;
 
 			AddTagToImage(_newTagName);

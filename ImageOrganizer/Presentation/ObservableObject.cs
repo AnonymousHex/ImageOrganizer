@@ -13,9 +13,10 @@ namespace ImageOrganizer.Presentation
 		/// 
 		/// </summary>
 		/// <param name="propertyName"></param>
-		protected void RaisePropertyChanged(string propertyName)
+		/// <param name="checkForCommand"></param>
+		protected void RaisePropertyChanged(string propertyName, bool checkForCommand = true)
 		{
-			OnPropertyChanged(propertyName);
+			OnPropertyChanged(propertyName, checkForCommand);
 		}
 
 		/// <summary>
@@ -47,22 +48,23 @@ namespace ImageOrganizer.Presentation
 		/// the CanExecutedChanged event will be raised as well.
 		/// </summary>
 		/// <param name="propertyName"></param>
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		/// <param name="checkForCommand">Whether or not to check that the property is a command to raise the CanExecuteChanged event.</param>
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null, bool checkForCommand = true)
 		{
 			var handler = PropertyChanged;
 			if (handler != null) 
 				handler(this, new PropertyChangedEventArgs(propertyName));
 
-			if (propertyName == null)
+			if (checkForCommand == false || propertyName == null)
 				return;
 
-			var property = GetType().GetProperty(propertyName);
+			PropertyInfo property = GetType().GetProperty(propertyName);
 			if (property == null)
 				return;
 
-			var r = property.GetValue(this, BindingFlags.GetProperty, null, null, null) as Command;
-			if (r != null)
-				r.RaiseCanExecuteChanged();
+			var command = property.GetValue(this, BindingFlags.GetProperty, null, null, null) as Command;
+			if (command != null)
+				command.RaiseCanExecuteChanged();
 		}
 	}
 }
