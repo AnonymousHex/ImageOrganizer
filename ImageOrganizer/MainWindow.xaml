@@ -61,6 +61,7 @@
 					  Grid.RowSpan="2"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto"
+					  Name="ScrollViewer"
 		              Grid.Column="1"
 		              Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Files}">
@@ -78,10 +79,9 @@
 			</ItemsControl>
 			
 			<i:Interaction.Triggers>
-				<i:EventTrigger EventName="MouseDown">
-					<i:InvokeCommandAction Command="{Binding HandleScrollChangedCommand}"
-										   CommandParameter="{Binding VerticalOffset, ElementName=ScrollViewer}"/>
-				</i:EventTrigger>
+				<presentation:RoutedEventTrigger RoutedEvent="ScrollViewer.ScrollChanged">
+					<i:InvokeCommandAction Command="{Binding HandleScrollChangedCommand}" CommandParameter="{Binding VerticalOffset, ElementName=ScrollViewer}"/>
+				</presentation:RoutedEventTrigger>
 			</i:Interaction.Triggers>
 		</ScrollViewer>
 

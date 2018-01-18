@@ -72,6 +72,7 @@
     <Compile Include="Presentation\ImageItemView.xaml.cs">
       <DependentUpon>ImageItemView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\RoutedEventTrigger.cs" />
     <Compile Include="Presentation\TagView.xaml.cs">
       <DependentUpon>TagView.xaml</DependentUpon>
     </Compile>

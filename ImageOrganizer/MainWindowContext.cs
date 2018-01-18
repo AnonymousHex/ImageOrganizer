@@ -20,7 +20,8 @@ namespace ImageOrganizer
 	/// </summary>
 	public class MainWindowContext : ObservableObject, IImageHost
 	{
-		private const int MaxImagesPerCreation = 50;
+		private const int ImagesPerInitialCreation = 50;
+		private const int ImagesPerSubsequentCreation = 10;
 
 		private Command _browseCommand;
 		private Command _newTagCommand;
@@ -35,6 +36,8 @@ namespace ImageOrganizer
 		private string _tagSearch;
 		private ImageItem _selectedImage;
 		private ImageSource _selectedImageSource;
+
+		private double _maxVerticalOffset;
 
 		private IEnumerable<FileInfo> _allFiles;
 		private IEnumerator<FileInfo> _enumerator;
@@ -209,7 +212,7 @@ namespace ImageOrganizer
 		}
 
 		/// <summary>
-		/// 
+		/// Creates a set of image items using a thread pool.
 		/// </summary>
 		/// <param name="state"></param>
 		void CreateImageItems(object state)
@@ -217,6 +220,7 @@ namespace ImageOrganizer
 			_isCreatingImages = true;
 
 			var path = (string) state;
+			int imageCount = ImagesPerSubsequentCreation;
 			if (string.IsNullOrEmpty(path) == false)
 			{
 				_allFiles = new DirectoryInfo(path)
@@ -224,13 +228,14 @@ namespace ImageOrganizer
 					.Where(p => p != null && Regex.IsMatch(p.Extension, ".jpg|.jpeg|.png", RegexOptions.IgnoreCase));
 
 				_enumerator = _allFiles.GetEnumerator();
+				imageCount = ImagesPerInitialCreation;
 			}
 
 			CancellationTokenSource cts = new CancellationTokenSource();
 			int count = 0;
-			var waitHandles = new WaitHandle[MaxImagesPerCreation];
+			var waitHandles = new List<WaitHandle>(imageCount);
 
-			while (cts.IsCancellationRequested == false && count < MaxImagesPerCreation)
+			while (cts.IsCancellationRequested == false && count < imageCount)
 			{
 				if (_enumerator.MoveNext() == false)
 				{
@@ -243,26 +248,42 @@ namespace ImageOrganizer
 					continue;
 
 				var waitHandle = new ManualResetEvent(false);
-				waitHandles[count] = waitHandle;
+				waitHandles.Add(waitHandle);
 				var helper = new ImageCreationHelper(info.FullName, CreateImageItem, waitHandle);
 				ThreadPool.QueueUserWorkItem(helper.Callback, helper);
 
 				count++;
 			}
 
-			WaitHandle.WaitAll(waitHandles);
+			if (cts.IsCancellationRequested)
+				CleanUpEnumerator();
+
+			var handles = waitHandles.Where(h => h != null).ToArray();
+			if (handles.Any() == false)
+				return;
+
+			WaitHandle.WaitAll(handles);
 
 			//raise the collection changed on any remaining files that have been created.
 			Files.OnAddedRange();
 
 			//if we cancelled it means there are no more files left.
 			if (cts.IsCancellationRequested)
-			{
-				_enumerator.Dispose();
-				_enumerator = null;
-			}
+				CleanUpEnumerator();
 
 			_isCreatingImages = false;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void CleanUpEnumerator()
+		{
+			if (_enumerator == null)
+				return;
+
+			_enumerator.Dispose();
+			_enumerator = null;
 		}
 
 		/// <summary>
@@ -290,7 +311,6 @@ namespace ImageOrganizer
 
 		void HandleScrollChanged(double verticalOffset)
 		{
-			//TODO determine if we're past prev max offset, if so create more images.  if not do nothing because we have them cached.
 			//TODO image items should have placeholder thumbnail or color before thumbnail has been generated.
 			//TODO need list of folders accessed (save this) in left pane (clicking will load all images).
 			//TODO save out grid splitter configurations.
@@ -298,10 +318,14 @@ namespace ImageOrganizer
 			if (_isCreatingImages || _enumerator == null)
 				return;
 
-			if (verticalOffset < 0.0)
+			if (verticalOffset < 0.0 || verticalOffset < _maxVerticalOffset)
 				return;
 
-			CreateImageItems("");
+
+			_maxVerticalOffset = verticalOffset;
+
+			_imageGenerationThread = new Thread(CreateImageItems);
+			_imageGenerationThread.Start("");
 		}
 
 		/// <summary>
