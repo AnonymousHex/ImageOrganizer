@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImageOrganizer.Organization;
@@ -13,6 +14,7 @@ namespace ImageOrganizer.Presentation
 		private readonly IImageHost _host;
 		private ImageSource _thumb;
 		private readonly string _filePath;
+		private readonly List<string> _tags = new List<string>();
 		private Command _selectCommand;
 
 		public ImageItem(string filePath, IImageHost host)

@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace ImageOrganizer.Presentation
 {
 	/// <summary>
 	/// 
 	/// </summary>
+	[DataContract]
 	public class ObservableObject : INotifyPropertyChanged
 	{
 		/// <summary>

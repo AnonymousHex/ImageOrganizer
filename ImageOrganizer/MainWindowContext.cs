@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Serialization;
 using ImageOrganizer.Organization;
 using ImageOrganizer.Presentation;
 using ImageOrganizer.Presentation.SelectFolder;
@@ -28,6 +28,7 @@ namespace ImageOrganizer
 		private Command _testCrashCommand;
 		private Command<double> _handleScrollChangedCommand;
 
+		//dictionary of tag names with lists of filepaths par tag
 		private Dictionary<string, List<string>> _imageTags;
 		private readonly ObservableImageCollection _files;
 		private readonly ObservableCollection<Tag> _tags;
@@ -46,35 +47,18 @@ namespace ImageOrganizer
 		private int _imagesCreatedSinceLastEvent;
 		private bool _isCreatingImages;
 
-		public MainWindowContext()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="window"></param>
+		public MainWindowContext(Window window)
 		{
 			_files = new ObservableImageCollection(true);
 			_tags = new ObservableCollection<Tag>();
 			_imageTags = new Dictionary<string, List<string>>();
 
-			var window = Application.Current.MainWindow;
-			if (window == null)
-				return;
-
 			window.Closed += MainWindowOnClosed;
-			window.Loaded += MainWindowOnLoaded;
-		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="routedEventArgs"></param>
-		private void MainWindowOnLoaded(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var window = (Window) sender;
-			window.Loaded -= MainWindowOnLoaded;
-
-			window.Left = Settings.Default.WindowLeft;
-			window.Top = Settings.Default.WindowTop;
-			window.WindowState = Settings.Default.WindowState;
-			window.Width = Settings.Default.WindowWidth;
-			window.Height = Settings.Default.WindowHeight;
 			LoadTags();
 		}
 
@@ -204,11 +188,28 @@ namespace ImageOrganizer
 			if (dlg.ShowDialog() == false)
 				return;
 
+			ResetImageItems();
+
 			_imageGenerationThread = new Thread(CreateImageItems);
 			_imageGenerationThread.Start(dlg.FolderName);
 
 			FolderPath = dlg.FolderName;
 			RaiseCanChangeImageChanged();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void ResetImageItems()
+		{
+			_files.Clear();
+			CleanUpEnumerator();
+			_allFiles = null;
+			_maxVerticalOffset = 0;
+			_imagesCreatedSinceLastEvent = 0;
+			SelectedImageSource = null;
+			SelectedImage = null;
+			//todo might need to save tag structure in the future
 		}
 
 		/// <summary>
@@ -420,8 +421,8 @@ namespace ImageOrganizer
 		{
 			using (var fs = new FileStream(Settings.TagsFilePath, FileMode.OpenOrCreate))
 			{
-				var serializer = new XmlSerializer(_imageTags.GetType());
-				serializer.Serialize(fs, _imageTags);
+				var serializer = new DataContractSerializer(_imageTags.GetType());
+				serializer.WriteObject(fs, _imageTags);
 			}
 		}
 
@@ -436,8 +437,8 @@ namespace ImageOrganizer
 
 			using (var fs = new FileStream(path, FileMode.Open))
 			{
-				var serializer = new XmlSerializer(_imageTags.GetType());
-				_imageTags = (Dictionary<string, List<string>>) serializer.Deserialize(fs);
+				var serializer = new DataContractSerializer(_imageTags.GetType());
+				_imageTags = (Dictionary<string, List<string>>) serializer.ReadObject(fs);
 			}
 		}
 

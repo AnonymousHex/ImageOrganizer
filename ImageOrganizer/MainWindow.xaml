@@ -4,16 +4,15 @@
 		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 		xmlns:properties="clr-namespace:ImageOrganizer.Properties"
 		xmlns:presentation="clr-namespace:ImageOrganizer.Presentation"
-		xmlns:imageOrganizer="clr-namespace:ImageOrganizer"
 		xmlns:controls="clr-namespace:ImageOrganizer.Controls"
 		xmlns:themes="clr-namespace:ImageOrganizer.Themes"
 		MinWidth="333"
 		MinHeight="300"
         Title="{x:Static properties:Resources.ImageOrganizer}" 
-		Height="830"
-		Width="1530">
+		Height="880"
+		Width="1000">
 	
-	<Grid>
+	<Grid x:Name="RootGrid">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="44"/>
 			<RowDefinition/>
@@ -49,7 +48,7 @@
 			                        Margin="0,12,2,4"
 			                        Height="Auto"
 			                        Content="Crash"/>
-			<TextBlock>
+			<TextBlock VerticalAlignment="Center">
 				<Run Text="Images:"/>
 				<Run Text="{Binding Path=Files.Count, Mode=OneWay}"/>
 			</TextBlock>
@@ -58,7 +57,8 @@
 		<GridSplitter Grid.Column="0"
 					  Grid.Row="0"
 		              ResizeDirection="Columns"
-					  Grid.RowSpan="2"/>
+					  Grid.RowSpan="2"
+					  DragCompleted="Column1_OnDragCompleted"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto"
 					  Name="ScrollViewer"
@@ -88,12 +88,14 @@
 		<GridSplitter Grid.Column="1"
 		              Grid.Row="0"
 					  ResizeDirection="Columns"
-		              Grid.RowSpan="2"/>
+		              Grid.RowSpan="2"
+					  DragCompleted="Column2_OnDragCompleted"/>
+		
 		<Grid Grid.Column="2"
 		      Grid.Row="1">
 			<Grid.RowDefinitions>
 				<RowDefinition/>
-				<RowDefinition Height="Auto"/>
+				<RowDefinition MinHeight="250"/>
 			</Grid.RowDefinitions>
 			<Image  Grid.Row="0"
 			        VerticalAlignment="Center"
