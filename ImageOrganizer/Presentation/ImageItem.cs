@@ -17,6 +17,11 @@ namespace ImageOrganizer.Presentation
 		private readonly List<string> _tags = new List<string>();
 		private Command _selectCommand;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <param name="host"></param>
 		public ImageItem(string filePath, IImageHost host)
 		{
 			_host = host;
@@ -30,8 +35,10 @@ namespace ImageOrganizer.Presentation
 		/// <param name="path"></param>
 		void CreateThumbnail(string path)
 		{
-			using (var stream = new FileStream(path, FileMode.Open))
+			FileStream stream = null;
+			try
 			{
+				stream = new FileStream(path, FileMode.Open);
 				var frame =
 					BitmapDecoder.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.None)
 						.Frames[0];
@@ -53,8 +60,8 @@ namespace ImageOrganizer.Presentation
 				int decodeH = 100;
 				int decodeW = frame.PixelWidth * decodeH / pixelH;
 
-				double scaleX = decodeW / (double)pixelW;
-				double scaleY = decodeH / (double)pixelH;
+				double scaleX = decodeW / (double) pixelW;
+				double scaleY = decodeH / (double) pixelH;
 
 				TransformGroup transformGroup = new TransformGroup();
 
@@ -66,6 +73,15 @@ namespace ImageOrganizer.Presentation
 				writable.Freeze();
 
 				_thumb = writable;
+			}
+			catch (IOException ex)
+			{
+				//TODO generate default image
+			}
+			finally
+			{
+				if (stream != null)
+					stream.Dispose();
 			}
 		}
 

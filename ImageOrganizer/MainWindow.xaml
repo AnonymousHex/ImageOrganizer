@@ -53,6 +53,24 @@
 				<Run Text="{Binding Path=Files.Count, Mode=OneWay}"/>
 			</TextBlock>
 		</StackPanel>
+		<Grid Grid.Column="0"
+		      Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<TextBlock Text="{x:Static properties:Resources.Folders}"/>
+			<controls:UniformListBox ItemsSource="{Binding Folders}"
+									 SelectedItem="{Binding FolderPath}"
+									 Grid.Row="1"
+			                         Margin="2,4,2,2">
+				<controls:UniformListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding}"/>
+					</DataTemplate>
+				</controls:UniformListBox.ItemTemplate>
+			</controls:UniformListBox>
+		</Grid>
 		
 		<GridSplitter Grid.Column="0"
 					  Grid.Row="0"

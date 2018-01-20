@@ -13,6 +13,7 @@ namespace ImageOrganizer
 		private const string SettingsFolderName = "ImageOrganizer";
 		private const string TagsFileName = "tags";
 		private const string SettingsFileName = "settings";
+		private const string DataFileName = "data";
 
 		private static string _settingsFolderPath;
 
@@ -30,6 +31,14 @@ namespace ImageOrganizer
 		public static string TagsFilePath
 		{
 			get { return Path.Combine(SettingsFolderPath, TagsFileName); }
+		}
+
+		/// <summary>
+		/// The full path to the database file.
+		/// </summary>
+		public static string DataFilePath
+		{
+			get { return Path.Combine(SettingsFolderPath, DataFileName); }
 		}
 
 		/// <summary>

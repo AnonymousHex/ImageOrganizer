@@ -187,5 +187,29 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _scrollBarHoveredBackgroundBrush ?? (_scrollBarHoveredBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "ScrollBarHoveredBackgroundBrush")); }
 		}
+
+		private static ResourceKey _uniformListBoxBorderBrush;
+		public static ResourceKey UniformListBoxBorderBrush
+		{
+			get { return _uniformListBoxBorderBrush ?? (_uniformListBoxBorderBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformListBoxBorderBrush")); }
+		}
+
+		private static ResourceKey _uniformListBoxItemSelectedBackgroundBrush;
+		public static ResourceKey UniformListBoxItemSelectedBackgroundBrush
+		{
+			get { return _uniformListBoxItemSelectedBackgroundBrush ?? (_uniformListBoxItemSelectedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformListBoxItemSelectedBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformListBoxItemSelectedUnfocusedBackgroundBrush;
+		public static ResourceKey UniformListBoxItemSelectedUnfocusedBackgroundBrush
+		{
+			get { return _uniformListBoxItemSelectedUnfocusedBackgroundBrush ?? (_uniformListBoxItemSelectedUnfocusedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformListBoxItemSelectedUnfocusedBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformListBoxItemMouseOverBackgroundBrush;
+		public static ResourceKey UniformListBoxItemMouseOverBackgroundBrush
+		{
+			get { return _uniformListBoxItemMouseOverBackgroundBrush ?? (_uniformListBoxItemMouseOverBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformListBoxItemMouseOverBackgroundBrush")); }
+		}
 	}
 }

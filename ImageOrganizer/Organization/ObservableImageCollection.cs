@@ -133,7 +133,11 @@ namespace ImageOrganizer.Organization
 		{
 			if (_multiThreaded)
 			{
-				Application.Current.Dispatcher.Invoke(() =>
+				var app = Application.Current;
+				if (app == null)
+					return;
+
+				app.Dispatcher.Invoke(() =>
 				{
 					OnCollectionChanged(action, item, index, true);
 				});

@@ -4,6 +4,7 @@
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformScrollBar.xaml"/>
+		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformListBox.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--UniformWindow-->
@@ -39,6 +40,12 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarArrowButtonHoveredBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarHoveredBackgroundBrush}" Color="#FF2D2D2D"/>
+
+	<!--UniformListBox-->
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxBorderBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemSelectedBackgroundBrush}" Color="#FF003A65"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemSelectedUnfocusedBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemMouseOverBackgroundBrush}" Color="#FF2D2D2D"/>
 
 	<!--All Controls-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformForegroundBrush}" Color="#FFF1F1F1"/>

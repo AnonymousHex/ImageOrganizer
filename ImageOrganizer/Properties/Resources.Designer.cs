@@ -61,6 +61,15 @@ namespace ImageOrganizer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folders.
+        /// </summary>
+        public static string Folders {
+            get {
+                return ResourceManager.GetString("Folders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image Organizer.
         /// </summary>
         public static string ImageOrganizer {

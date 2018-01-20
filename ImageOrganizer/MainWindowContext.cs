@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -12,6 +11,7 @@ using System.Windows.Media.Imaging;
 using ImageOrganizer.Organization;
 using ImageOrganizer.Presentation;
 using ImageOrganizer.Presentation.SelectFolder;
+using ImageOrganizer.Utilities;
 
 namespace ImageOrganizer
 {
@@ -28,10 +28,11 @@ namespace ImageOrganizer
 		private Command _testCrashCommand;
 		private Command<double> _handleScrollChangedCommand;
 
-		//dictionary of tag names with lists of filepaths par tag
-		private Dictionary<string, List<string>> _imageTags;
+		//dictionary of tag names with lists of filepaths per tag
+		private readonly Dictionary<string, List<string>> _imageTags = new Dictionary<string, List<string>>();
 		private readonly ObservableImageCollection _files;
-		private readonly ObservableCollection<Tag> _tags;
+		private readonly ObservableCollection<Tag> _tags = new ObservableCollection<Tag>();
+		private readonly ObservableCollection<string> _folders = new ObservableCollection<string>();
 		private string _folderPath;
 		private string _newTagName;
 		private string _tagSearch;
@@ -54,12 +55,11 @@ namespace ImageOrganizer
 		public MainWindowContext(Window window)
 		{
 			_files = new ObservableImageCollection(true);
-			_tags = new ObservableCollection<Tag>();
-			_imageTags = new Dictionary<string, List<string>>();
 
 			window.Closed += MainWindowOnClosed;
 
-			LoadTags();
+			IOUtilities.LoadObject(Settings.TagsFilePath, ref _imageTags);
+			IOUtilities.LoadObject(Settings.DataFilePath, ref _folders);
 		}
 
 		/// <summary>
@@ -77,7 +77,9 @@ namespace ImageOrganizer
 			Settings.Default.WindowWidth = window.Width;
 			Settings.Default.WindowHeight = window.Height;
 			Settings.Default.SaveSettings();
-			SaveTags();
+
+			IOUtilities.SaveObject(Settings.TagsFilePath, _imageTags);
+			IOUtilities.SaveObject(Settings.DataFilePath, _folders);
 		}
 
 		/// <summary>
@@ -99,7 +101,23 @@ namespace ImageOrganizer
 		public string FolderPath
 		{
 			get { return _folderPath; }
-			set { Set("FolderPath", ref _folderPath, value); }
+			set
+			{
+				if (_folderPath == value)
+					return;
+
+				Set("FolderPath", ref _folderPath, value);
+				if (_folders.Contains(value) == false)
+					Folders.Add(value);
+
+				ResetImageItems();
+				BeginCreatingImageItems(value);
+			}
+		}
+
+		public ObservableCollection<string> Folders
+		{
+			get { return _folders; }
 		}
 
 		public Command BrowseCommand
@@ -188,11 +206,6 @@ namespace ImageOrganizer
 			if (dlg.ShowDialog() == false)
 				return;
 
-			ResetImageItems();
-
-			_imageGenerationThread = new Thread(CreateImageItems);
-			_imageGenerationThread.Start(dlg.FolderName);
-
 			FolderPath = dlg.FolderName;
 			RaiseCanChangeImageChanged();
 		}
@@ -210,6 +223,16 @@ namespace ImageOrganizer
 			SelectedImageSource = null;
 			SelectedImage = null;
 			//todo might need to save tag structure in the future
+		}
+
+		/// <summary>
+		/// Begins the image creation process on another thread.
+		/// </summary>
+		/// <param name="folderPath"></param>
+		void BeginCreatingImageItems(string folderPath)
+		{
+			_imageGenerationThread = new Thread(CreateImageItems);
+			_imageGenerationThread.Start(folderPath);
 		}
 
 		/// <summary>
@@ -325,8 +348,17 @@ namespace ImageOrganizer
 
 			_maxVerticalOffset = verticalOffset;
 
-			_imageGenerationThread = new Thread(CreateImageItems);
-			_imageGenerationThread.Start("");
+			BeginCreatingImageItems("");
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="item"></param>
+		public void SelectImage(ImageItem item)
+		{
+			SelectedImage = item;
+			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
 		}
 
 		/// <summary>
@@ -412,44 +444,6 @@ namespace ImageOrganizer
 				tag.RemoveRequested -= TagOnRemoveRequested;
 				tag.AddToImageRequested -= TagOnAddToImageRequested;
 			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		void SaveTags()
-		{
-			using (var fs = new FileStream(Settings.TagsFilePath, FileMode.OpenOrCreate))
-			{
-				var serializer = new DataContractSerializer(_imageTags.GetType());
-				serializer.WriteObject(fs, _imageTags);
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		void LoadTags()
-		{
-			var path = Settings.TagsFilePath;
-			if (File.Exists(path) == false)
-				return;
-
-			using (var fs = new FileStream(path, FileMode.Open))
-			{
-				var serializer = new DataContractSerializer(_imageTags.GetType());
-				_imageTags = (Dictionary<string, List<string>>) serializer.ReadObject(fs);
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="item"></param>
-		public void SelectImage(ImageItem item)
-		{
-			SelectedImage = item;
-			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
 		}
 	}
 }

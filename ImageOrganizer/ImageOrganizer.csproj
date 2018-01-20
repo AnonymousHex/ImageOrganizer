@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\UniformListBox.cs" />
     <Compile Include="Controls\UniformTextBox.cs" />
     <Compile Include="Controls\UniformButton.cs" />
     <Compile Include="Controls\UniformWindowButton.cs" />
@@ -78,6 +79,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Themes\AssetResourceKeys.cs" />
+    <Compile Include="Utilities\IOUtilities.cs" />
     <Page Include="ImageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -98,6 +100,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Presentation\Controls\UniformListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Presentation\Controls\UniformScrollBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
