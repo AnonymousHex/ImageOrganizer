@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using ImageOrganizer.Presentation;
 
 namespace ImageOrganizer.Organization
 {
+	[DataContract]
 	public class Tag : ObservableObject
 	{
 		private Command _removeCommand;
 		private Command _addToImageCommand;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
 		public Tag(string name)
 		{
 			Name = name;
@@ -16,6 +22,7 @@ namespace ImageOrganizer.Organization
 		/// <summary>
 		/// 
 		/// </summary>
+		[DataMember]
 		public string Name { get; private set; }
 
 		/// <summary>
@@ -56,12 +63,12 @@ namespace ImageOrganizer.Organization
 		{
 			var handler = AddToImageRequested;
 			if (handler != null)
-				handler.Invoke(this, new EventArgs());
+				handler.Invoke(this, Name);
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public event EventHandler AddToImageRequested;
+		public event EventHandler<string> AddToImageRequested;
 	}
 }

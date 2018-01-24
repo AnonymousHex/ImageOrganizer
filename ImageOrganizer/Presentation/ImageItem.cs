@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImageOrganizer.Organization;
@@ -14,7 +13,6 @@ namespace ImageOrganizer.Presentation
 		private readonly IImageHost _host;
 		private ImageSource _thumb;
 		private readonly string _filePath;
-		private readonly List<string> _tags = new List<string>();
 		private Command _selectCommand;
 
 		/// <summary>
@@ -94,7 +92,7 @@ namespace ImageOrganizer.Presentation
 		}
 
 		/// <summary>
-		/// 
+		/// The image's thumbnail.
 		/// </summary>
 		public ImageSource ThumbNail
 		{
@@ -102,7 +100,7 @@ namespace ImageOrganizer.Presentation
 		}
 
 		/// <summary>
-		/// 
+		/// The images file name.
 		/// </summary>
 		public string FileName
 		{
@@ -110,7 +108,7 @@ namespace ImageOrganizer.Presentation
 		}
 
 		/// <summary>
-		/// 
+		/// The full path to the image.
 		/// </summary>
 		public string FilePath
 		{

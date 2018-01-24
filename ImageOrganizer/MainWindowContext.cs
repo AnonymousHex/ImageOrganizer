@@ -29,9 +29,10 @@ namespace ImageOrganizer
 		private Command<double> _handleScrollChangedCommand;
 
 		//dictionary of tag names with lists of filepaths per tag
-		private readonly Dictionary<string, List<string>> _imageTags = new Dictionary<string, List<string>>();
+		private readonly Dictionary<string, List<Tag>> _imageTags = new Dictionary<string, List<Tag>>();
+		private readonly ObservableCollection<Tag> _allTags = new ObservableCollection<Tag>();
+
 		private readonly ObservableImageCollection _files;
-		private readonly ObservableCollection<Tag> _tags = new ObservableCollection<Tag>();
 		private readonly ObservableCollection<string> _folders = new ObservableCollection<string>();
 		private string _folderPath;
 		private string _newTagName;
@@ -58,7 +59,8 @@ namespace ImageOrganizer
 
 			window.Closed += MainWindowOnClosed;
 
-			IOUtilities.LoadObject(Settings.TagsFilePath, ref _imageTags);
+			IOUtilities.LoadObject(Settings.TagsFilePath, ref _allTags);
+			IOUtilities.LoadObject(Settings.ImagesFilePath, ref _imageTags);
 			IOUtilities.LoadObject(Settings.DataFilePath, ref _folders);
 		}
 
@@ -78,7 +80,8 @@ namespace ImageOrganizer
 			Settings.Default.WindowHeight = window.Height;
 			Settings.Default.SaveSettings();
 
-			IOUtilities.SaveObject(Settings.TagsFilePath, _imageTags);
+			IOUtilities.SaveObject(Settings.TagsFilePath, _allTags);
+			IOUtilities.SaveObject(Settings.ImagesFilePath, _imageTags);
 			IOUtilities.SaveObject(Settings.DataFilePath, _folders);
 		}
 
@@ -91,7 +94,7 @@ namespace ImageOrganizer
 			set
 			{
 				Set("TagSearch", ref _tagSearch, value);
-				RaisePropertyChanged("Tags");
+				RaisePropertyChanged("CurrentTags");
 			}
 		}
 
@@ -115,6 +118,9 @@ namespace ImageOrganizer
 			}
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public ObservableCollection<string> Folders
 		{
 			get { return _folders; }
@@ -145,6 +151,9 @@ namespace ImageOrganizer
 			throw new Exception("This is a test of the crash handling functionality.");
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public ObservableImageCollection Files
 		{
 			get
@@ -153,14 +162,28 @@ namespace ImageOrganizer
 			}
 		}
 
-		public ObservableCollection<Tag> Tags
+		/// <summary>
+		/// 
+		/// </summary>
+		public IReadOnlyCollection<Tag> CurrentTags
 		{
 			get
 			{
-				return string.IsNullOrWhiteSpace(_tagSearch) ?
-					_tags :
-					new ObservableCollection<Tag>(_tags.Where(t => t.Name.Contains(_tagSearch)));
+				//return string.IsNullOrWhiteSpace(_tagSearch) ?
+				//todo enable filtering
+				if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
+					_imageTags.Add(_selectedImage.FilePath, new List<Tag>());
+
+				return _imageTags[_selectedImage.FilePath];
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ObservableCollection<Tag> AllTags
+		{
+			get { return _allTags; }
 		}
 
 		/// <summary>
@@ -222,7 +245,6 @@ namespace ImageOrganizer
 			_imagesCreatedSinceLastEvent = 0;
 			SelectedImageSource = null;
 			SelectedImage = null;
-			//todo might need to save tag structure in the future
 		}
 
 		/// <summary>
@@ -359,6 +381,7 @@ namespace ImageOrganizer
 		{
 			SelectedImage = item;
 			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
+			RaisePropertyChanged("CurrentTags");
 		}
 
 		/// <summary>
@@ -371,60 +394,73 @@ namespace ImageOrganizer
 			RaisePropertyChanged("CurrentImage");
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		bool CanMakeNewTag()
 		{
 			return string.IsNullOrWhiteSpace(_newTagName) == false;
 		}
 
+		/// <summary>
+		/// Creates a new tag.
+		/// </summary>
 		void MakeNewTag()
 		{
-			var tag = new Tag(_newTagName);
-
-			RegisterTagEvents(tag, true);
-			_tags.Add(tag);
-			RaisePropertyChanged("Tags");
-			NewTagName = null;
-
-			if (Files.Any() == false)
+			if (_allTags.Any(t => t.Name == _newTagName))
 				return;
 
-			AddTagToImage(_newTagName);
+			var tag = new Tag(_newTagName);
+			_allTags.Add(tag);
+
+			RegisterTagEvents(tag, true);
+			RaisePropertyChanged("AllTags");
+			NewTagName = null;
+
+			//todo we may want to add the new tag to the current image later
+			//if (_selectedImage == null)
+			//	return;
+
+			//AddTagToImage(_newTagName);
+			//RaisePropertyChanged("CurrentTags");
 		}
 
 		/// <summary>
-		/// 
+		/// Adds a tag to the current image.
 		/// </summary>
-		/// <param name="name"></param>
-		void AddTagToImage(string name)
+		/// <param name="tag"></param>
+		void AddTagToImage(Tag tag)
 		{
 			if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
-				_imageTags[_selectedImage.FilePath] = new List<string> { name };
-			else if (_imageTags[_selectedImage.FilePath].Contains(name) == false)
-				_imageTags[_selectedImage.FilePath].Add(name);
+				_imageTags[_selectedImage.FilePath] = new List<Tag> { tag };
+			else if (_imageTags[_selectedImage.FilePath].Contains(tag) == false)
+				_imageTags[_selectedImage.FilePath].Add(tag);
 		}
 
 		/// <summary>
-		/// 
+		/// Removes the tag from its image.  The tag will still remain in the main collection of tags.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="eventArgs"></param>
-		private void TagOnRemoveRequested(object sender, EventArgs eventArgs)
+		private void Tag_RemoveRequested(object sender, EventArgs eventArgs)
 		{
 			var tag = (Tag) sender;
-			_tags.Remove(tag);
-			RaisePropertyChanged("Tags");
+			_imageTags[_selectedImage.FilePath].Remove(tag);
+
+			RaisePropertyChanged("CurrentTags");
 			RegisterTagEvents(tag, false);
 		}
 
 		/// <summary>
-		/// 
+		/// Adds the tag to the current image.
 		/// </summary>
 		/// <param name="sender"></param>
-		/// <param name="eventArgs"></param>
-		void TagOnAddToImageRequested(object sender, EventArgs eventArgs)
+		/// <param name="args"></param>
+		private void Tag_AddToImageRequested(object sender, string args)
 		{
-			var tag = (Tag)sender;
-			AddTagToImage(tag.Name);
+			AddTagToImage((Tag)sender);
+			RaisePropertyChanged("CurrentTags");
 		}
 
 		/// <summary>
@@ -436,13 +472,13 @@ namespace ImageOrganizer
 		{
 			if (register)
 			{
-				tag.RemoveRequested += TagOnRemoveRequested;
-				tag.AddToImageRequested += TagOnAddToImageRequested;
+				tag.RemoveRequested += Tag_RemoveRequested;
+				tag.AddToImageRequested += Tag_AddToImageRequested;
 			}
 			else
 			{
-				tag.RemoveRequested -= TagOnRemoveRequested;
-				tag.AddToImageRequested -= TagOnAddToImageRequested;
+				tag.RemoveRequested -= Tag_RemoveRequested;
+				tag.AddToImageRequested -= Tag_AddToImageRequested;
 			}
 		}
 	}

@@ -19,7 +19,7 @@
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition MinWidth="200"/>
-			<ColumnDefinition/>
+			<ColumnDefinition MinWidth="100"/>
 			<ColumnDefinition MinWidth="120"/>
 		</Grid.ColumnDefinitions>
 		<Border Grid.Row="0"
@@ -45,6 +45,7 @@
 			                        Content="Browse"/>
 			<controls:UniformButton Command="{Binding TestCrashCommand}"
 			                        HorizontalAlignment="Left"
+									IsEnabled="False"
 			                        Margin="0,12,2,4"
 			                        Height="Auto"
 			                        Content="Crash"/>
@@ -58,8 +59,14 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
 			</Grid.RowDefinitions>
-			<TextBlock Text="{x:Static properties:Resources.Folders}"/>
+			<StackPanel Grid.Row="0"
+						Margin="2,2,0,0">
+				<TextBlock Text="{x:Static properties:Resources.Folders}"/>
+				<Separator MinHeight="2"/>
+			</StackPanel>
 			<controls:UniformListBox ItemsSource="{Binding Folders}"
 									 SelectedItem="{Binding FolderPath}"
 									 Grid.Row="1"
@@ -70,6 +77,40 @@
 					</DataTemplate>
 				</controls:UniformListBox.ItemTemplate>
 			</controls:UniformListBox>
+			<StackPanel Grid.Row="2"
+			            Margin="2,2,0,0">
+				<TextBlock Text="{x:Static properties:Resources.Tags}"/>
+				<Separator/>
+				<StackPanel Orientation="Horizontal">
+					<controls:UniformTextBox Text="{Binding NewTagName, UpdateSourceTrigger=PropertyChanged}"
+											 HorizontalAlignment="Stretch"/>
+					<controls:UniformButton Command="{Binding NewTagCommand}"
+											Margin="4,0,0,0"
+											Content="{x:Static properties:Resources.Add}"/>
+				</StackPanel>
+			</StackPanel>
+			<ScrollViewer Grid.Row="3"
+						  MinHeight="200"
+			              VerticalScrollBarVisibility="Auto">
+				<controls:UniformListBox ItemsSource="{Binding AllTags}">
+					<controls:UniformListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Text="{Binding Name}"/>
+								<i:Interaction.Triggers>
+									<i:EventTrigger EventName="MouseDown">
+										<i:InvokeCommandAction Command="{Binding AddToImageCommand}"/>
+									</i:EventTrigger>
+								</i:Interaction.Triggers>
+							</Grid>
+						</DataTemplate>
+					</controls:UniformListBox.ItemTemplate>
+				</controls:UniformListBox>
+			</ScrollViewer>
 		</Grid>
 		
 		<GridSplitter Grid.Column="0"
@@ -113,17 +154,19 @@
 		      Grid.Row="1">
 			<Grid.RowDefinitions>
 				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
 				<RowDefinition MinHeight="250"/>
 			</Grid.RowDefinitions>
 			<Image  Grid.Row="0"
+					Margin="8"
 			        VerticalAlignment="Center"
 			        HorizontalAlignment="Center"
 			        Source="{Binding SelectedImageSource}"/>
-			<GridSplitter Grid.Row="0"
+			<GridSplitter Grid.Row="1"
 						  ResizeDirection="Rows"/>
 			
-			<ItemsControl ItemsSource="{Binding Tags}"
-			              Grid.Row="1">
+			<ItemsControl ItemsSource="{Binding CurrentTags}"
+			              Grid.Row="2">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel/>

@@ -28,10 +28,10 @@
 			        Width="25"
 			        Height="25"/>
 		</Grid>
-		<i:Interaction.Triggers>
+		<!--<i:Interaction.Triggers>
 			<i:EventTrigger EventName="MouseDown">
 				<i:InvokeCommandAction Command="{Binding AddToImageCommand}"/>
 			</i:EventTrigger>
-		</i:Interaction.Triggers>
+		</i:Interaction.Triggers>-->
 	</Border>
 </UserControl>

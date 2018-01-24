@@ -93,7 +93,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainWindowContext.cs" />
-    <Compile Include="Organization\Image.cs" />
     <Compile Include="Organization\Tag.cs" />
     <Compile Include="Presentation\Command.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -211,5 +211,11 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _uniformListBoxItemMouseOverBackgroundBrush ?? (_uniformListBoxItemMouseOverBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformListBoxItemMouseOverBackgroundBrush")); }
 		}
+
+		private static ResourceKey _uniformSeparatorBackgroundBrush;
+		public static ResourceKey UniformSeparatorBackgroundBrush
+		{
+			get { return _uniformSeparatorBackgroundBrush ?? (_uniformSeparatorBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformSeparatorBackgroundBrush")); }
+		}
 	}
 }
