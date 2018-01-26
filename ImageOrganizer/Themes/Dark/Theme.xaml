@@ -34,6 +34,7 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonHoverBorderBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonPressedBorderBrush}" Color="#FF1C1C1C"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformButtonDisabledBackgroundBrush}" Color="#FF1C1C1C"/>
 
 	<!--ScrollBar-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ScrollBarArrowButtonBackgroundBrush}" Color="#FF2D2D2D"/>
@@ -57,6 +58,9 @@
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemHoveredBackgroundBrush}" Color="#FF2D2D2D"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemPressedBackgroundBrush}" Color="#FF003A65"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformSeparatorBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TagRemoveButtonHoveredBackgroundBrush}" Color="#FF003258"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TagRemoveButtonPressedBackgroundBrush}" Color="#FF002B49"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TagBackgroundBrush}" Color="#FF003A65"/>
 	
 	<Style TargetType="TextBlock">
 		<Setter Property="Foreground" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformForegroundBrush}}"/>

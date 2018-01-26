@@ -35,6 +35,10 @@
 							<Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonPressedBorderBrush}}"/>
 							<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}}"/>
 						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformButtonPressedBackgroundBrush}}"/>
+							<Setter Property="Foreground" Value="{DynamicResource {x:Static themes:AssetResourceKeys.UniformDisabledForegroundBrush}}"/>
+						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>

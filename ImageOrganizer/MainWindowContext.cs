@@ -31,6 +31,8 @@ namespace ImageOrganizer
 		//dictionary of tag names with lists of filepaths per tag
 		private readonly Dictionary<string, List<Tag>> _imageTags = new Dictionary<string, List<Tag>>();
 		private readonly ObservableCollection<Tag> _allTags = new ObservableCollection<Tag>();
+		private Tag _selectedTag;
+		private ObservableCollection<Tag> _currentTags;
 
 		private readonly ObservableImageCollection _files;
 		private readonly ObservableCollection<string> _folders = new ObservableCollection<string>();
@@ -83,6 +85,19 @@ namespace ImageOrganizer
 			IOUtilities.SaveObject(Settings.TagsFilePath, _allTags);
 			IOUtilities.SaveObject(Settings.ImagesFilePath, _imageTags);
 			IOUtilities.SaveObject(Settings.DataFilePath, _folders);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Tag SelectedTag
+		{
+			get { return _selectedTag; }
+			set
+			{
+				Set("SelectedTag", ref _selectedTag, value);
+				AddTagToImage(value);
+			}
 		}
 
 		/// <summary>
@@ -165,16 +180,17 @@ namespace ImageOrganizer
 		/// <summary>
 		/// 
 		/// </summary>
-		public IReadOnlyCollection<Tag> CurrentTags
+		public ObservableCollection<Tag> CurrentTags
 		{
 			get
 			{
+				return _currentTags;
 				//return string.IsNullOrWhiteSpace(_tagSearch) ?
-				//todo enable filtering
-				if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
-					_imageTags.Add(_selectedImage.FilePath, new List<Tag>());
+				////todo enable filtering
+				//if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
+				//	_imageTags.Add(_selectedImage.FilePath, new List<Tag>());
 
-				return _imageTags[_selectedImage.FilePath];
+				//return _imageTags[_selectedImage.FilePath];
 			}
 		}
 
@@ -355,10 +371,13 @@ namespace ImageOrganizer
 			helper.Handle.Set();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="verticalOffset"></param>
 		void HandleScrollChanged(double verticalOffset)
 		{
 			//TODO image items should have placeholder thumbnail or color before thumbnail has been generated.
-			//TODO need list of folders accessed (save this) in left pane (clicking will load all images).
 			//TODO save out grid splitter configurations.
 
 			if (_isCreatingImages || _enumerator == null)
@@ -379,8 +398,20 @@ namespace ImageOrganizer
 		/// <param name="item"></param>
 		public void SelectImage(ImageItem item)
 		{
+			//save the old image's tags.
+			if (_currentTags != null)
+				_imageTags[_selectedImage.FilePath] = _currentTags.ToList();
+
 			SelectedImage = item;
 			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
+
+			if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
+				_imageTags[_selectedImage.FilePath] = new List<Tag>();
+
+			_currentTags = new ObservableCollection<Tag>(_imageTags[_selectedImage.FilePath]);
+			foreach (var tag in _currentTags)
+				RegisterTagEvents(tag, true);
+
 			RaisePropertyChanged("CurrentTags");
 		}
 
@@ -432,10 +463,11 @@ namespace ImageOrganizer
 		/// <param name="tag"></param>
 		void AddTagToImage(Tag tag)
 		{
-			if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
-				_imageTags[_selectedImage.FilePath] = new List<Tag> { tag };
-			else if (_imageTags[_selectedImage.FilePath].Contains(tag) == false)
-				_imageTags[_selectedImage.FilePath].Add(tag);
+			if (CurrentTags.Contains(tag))
+				return;
+
+			CurrentTags.Add(tag);
+			RegisterTagEvents(tag, true);
 		}
 
 		/// <summary>
@@ -446,9 +478,8 @@ namespace ImageOrganizer
 		private void Tag_RemoveRequested(object sender, EventArgs eventArgs)
 		{
 			var tag = (Tag) sender;
-			_imageTags[_selectedImage.FilePath].Remove(tag);
+			CurrentTags.Remove(tag);
 
-			RaisePropertyChanged("CurrentTags");
 			RegisterTagEvents(tag, false);
 		}
 
@@ -459,8 +490,10 @@ namespace ImageOrganizer
 		/// <param name="args"></param>
 		private void Tag_AddToImageRequested(object sender, string args)
 		{
+			if (_selectedImage == null)
+				return;
+
 			AddTagToImage((Tag)sender);
-			RaisePropertyChanged("CurrentTags");
 		}
 
 		/// <summary>

@@ -61,7 +61,7 @@
     <Compile Include="Controls\UniformListBox.cs" />
     <Compile Include="Controls\UniformTextBox.cs" />
     <Compile Include="Controls\UniformButton.cs" />
-    <Compile Include="Controls\UniformWindowButton.cs" />
+    <Compile Include="Controls\UniformIconButton.cs" />
     <Compile Include="Controls\UniformWindow.cs" />
     <Compile Include="ImageView.xaml.cs">
       <DependentUpon>ImageView.xaml</DependentUpon>
@@ -115,7 +115,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Presentation\Controls\UniformWindowButton.xaml">
+    <Page Include="Presentation\Controls\UniformIconButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

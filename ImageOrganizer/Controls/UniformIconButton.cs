@@ -7,15 +7,15 @@ namespace ImageOrganizer.Controls
 	/// <summary>
 	/// 
 	/// </summary>
-	public class UniformWindowButton : Button
+	public class UniformIconButton : Button
 	{
-		static UniformWindowButton()
+		static UniformIconButton()
 		{
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(UniformWindowButton), new FrameworkPropertyMetadata(typeof(UniformWindowButton)));
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(UniformIconButton), new FrameworkPropertyMetadata(typeof(UniformIconButton)));
 		}
 
 		public static readonly DependencyProperty HoveredBackgroundProperty = DependencyProperty.Register(
-			"HoveredBackground", typeof(SolidColorBrush), typeof(UniformWindowButton), new PropertyMetadata(default(SolidColorBrush)));
+			"HoveredBackground", typeof(SolidColorBrush), typeof(UniformIconButton), new PropertyMetadata(default(SolidColorBrush)));
 
 		public SolidColorBrush HoveredBackground
 		{
@@ -24,7 +24,7 @@ namespace ImageOrganizer.Controls
 		}
 
 		public static readonly DependencyProperty PressedBackgroundProperty = DependencyProperty.Register(
-			"PressedBackground", typeof(SolidColorBrush), typeof(UniformWindowButton), new PropertyMetadata(default(SolidColorBrush)));
+			"PressedBackground", typeof(SolidColorBrush), typeof(UniformIconButton), new PropertyMetadata(default(SolidColorBrush)));
 
 		public SolidColorBrush PressedBackground
 		{
@@ -33,7 +33,7 @@ namespace ImageOrganizer.Controls
 		}
 
 		public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
-			"Icon", typeof(ImageSource), typeof(UniformWindowButton), new PropertyMetadata(default(ImageSource)));
+			"Icon", typeof(ImageSource), typeof(UniformIconButton), new PropertyMetadata(default(ImageSource)));
 
 		public ImageSource Icon
 		{

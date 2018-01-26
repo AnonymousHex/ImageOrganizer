@@ -30,34 +30,34 @@
 								<StackPanel Orientation="Horizontal"
 											VerticalAlignment="Top"
 								            HorizontalAlignment="Right">
-									<controls:UniformWindowButton Name="PART_MinimizeButton"
+									<controls:UniformIconButton Name="PART_MinimizeButton"
 									                              HoveredBackground="{DynamicResource {x:Static themes:AssetResourceKeys.WindowButtonBackgroundBrush}}"
 									                              PressedBackground="{DynamicResource {x:Static themes:AssetResourceKeys.WindowButtonPressedBackgroundBrush}}">
-										<controls:UniformWindowButton.Icon>
+										<controls:UniformIconButton.Icon>
 											<BitmapImage DecodePixelWidth="13" 
 														 DecodePixelHeight="11"
 														 UriSource="/Presentation/Resources/Minimize.png"/>
-										</controls:UniformWindowButton.Icon>
-									</controls:UniformWindowButton>
-									<controls:UniformWindowButton Name="PART_RestoreButton"
+										</controls:UniformIconButton.Icon>
+									</controls:UniformIconButton>
+									<controls:UniformIconButton Name="PART_RestoreButton"
 									                              HoveredBackground="{DynamicResource {x:Static themes:AssetResourceKeys.WindowButtonBackgroundBrush}}"
 									                              PressedBackground="{DynamicResource {x:Static themes:AssetResourceKeys.WindowButtonPressedBackgroundBrush}}">
-										<controls:UniformWindowButton.Icon>
+										<controls:UniformIconButton.Icon>
 											<BitmapImage DecodePixelWidth="13" 
 											             DecodePixelHeight="11"
 											             UriSource="/Presentation/Resources/Maximize.png"/>
-										</controls:UniformWindowButton.Icon>
-									</controls:UniformWindowButton>
-									<controls:UniformWindowButton Width="50"
+										</controls:UniformIconButton.Icon>
+									</controls:UniformIconButton>
+									<controls:UniformIconButton Width="50"
 																  Name="PART_CloseButton"
 																  HoveredBackground="{DynamicResource {x:Static themes:AssetResourceKeys.CloseButtonBackgroundBrush}}"
 									                              PressedBackground="{DynamicResource {x:Static themes:AssetResourceKeys.CloseButtonPressedBackgroundBrush}}">
-										<controls:UniformWindowButton.Icon>
+										<controls:UniformIconButton.Icon>
 											<BitmapImage DecodePixelWidth="13" 
 											             DecodePixelHeight="11"
 											             UriSource="/Presentation/Resources/Close.png"/>
-										</controls:UniformWindowButton.Icon>
-									</controls:UniformWindowButton>
+										</controls:UniformIconButton.Icon>
+									</controls:UniformIconButton>
 								</StackPanel>
 							</Grid>
 

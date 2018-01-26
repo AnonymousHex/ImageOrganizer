@@ -217,5 +217,29 @@ namespace ImageOrganizer.Themes
 		{
 			get { return _uniformSeparatorBackgroundBrush ?? (_uniformSeparatorBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformSeparatorBackgroundBrush")); }
 		}
+
+		private static ResourceKey _tagRemoveButtonHoveredBackgroundBrush;
+		public static ResourceKey TagRemoveButtonHoveredBackgroundBrush
+		{
+			get { return _tagRemoveButtonHoveredBackgroundBrush ?? (_tagRemoveButtonHoveredBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "TagRemoveButtonHoveredBackgroundBrush")); }
+		}
+
+		private static ResourceKey _tagRemoveButtonPressedBackgroundBrush;
+		public static ResourceKey TagRemoveButtonPressedBackgroundBrush
+		{
+			get { return _tagRemoveButtonPressedBackgroundBrush ?? (_tagRemoveButtonPressedBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "TagRemoveButtonPressedBackgroundBrush")); }
+		}
+
+		private static ResourceKey _tagBackgroundBrush;
+		public static ResourceKey TagBackgroundBrush
+		{
+			get { return _tagBackgroundBrush ?? (_tagBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "TagBackgroundBrush")); }
+		}
+
+		private static ResourceKey _uniformButtonDisabledBackgroundBrush;
+		public static ResourceKey UniformButtonDisabledBackgroundBrush
+		{
+			get { return _uniformButtonDisabledBackgroundBrush ?? (_uniformButtonDisabledBackgroundBrush = new ComponentResourceKey(typeof(SolidColorBrush), "UniformButtonDisabledBackgroundBrush")); }
+		}
 	}
 }

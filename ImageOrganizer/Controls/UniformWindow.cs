@@ -12,9 +12,9 @@ namespace ImageOrganizer.Controls
 	/// <summary>
 	/// 
 	/// </summary>
-	[TemplatePart(Name = CloseButtonName, Type = typeof(UniformWindowButton))]
-	[TemplatePart(Name = MinimizeButtonName, Type = typeof(UniformWindowButton))]
-	[TemplatePart(Name = RestoreButtonName, Type = typeof(UniformWindowButton))]
+	[TemplatePart(Name = CloseButtonName, Type = typeof(UniformIconButton))]
+	[TemplatePart(Name = MinimizeButtonName, Type = typeof(UniformIconButton))]
+	[TemplatePart(Name = RestoreButtonName, Type = typeof(UniformIconButton))]
 	public class UniformWindow : Window
 	{
 		private const string CloseButtonName = "PART_CloseButton";
@@ -22,9 +22,9 @@ namespace ImageOrganizer.Controls
 		private const string RestoreButtonName = "PART_RestoreButton";
 		private const string DragGripName = "PART_DragGrip";
 
-		private UniformWindowButton _closeButton;
-		private UniformWindowButton _restoreButton;
-		private UniformWindowButton _minimizeButton;
+		private UniformIconButton _closeButton;
+		private UniformIconButton _restoreButton;
+		private UniformIconButton _minimizeButton;
 		private Grid _dragGrip;
 
 		private static readonly Dictionary<WindowState, ImageSource> StateIcons = new Dictionary<WindowState, ImageSource>();
@@ -44,15 +44,15 @@ namespace ImageOrganizer.Controls
 		{
 			base.OnApplyTemplate();
 
-			_closeButton = GetTemplateChild(CloseButtonName) as UniformWindowButton;
+			_closeButton = GetTemplateChild(CloseButtonName) as UniformIconButton;
 			if (_closeButton != null)
 				_closeButton.Click += CloseButtonOnClick;
 
-			_restoreButton = GetTemplateChild(RestoreButtonName) as UniformWindowButton;
+			_restoreButton = GetTemplateChild(RestoreButtonName) as UniformIconButton;
 			if (_restoreButton != null)
 				_restoreButton.Click += RestoreButtonOnClick;
 
-			_minimizeButton = GetTemplateChild(MinimizeButtonName) as UniformWindowButton;
+			_minimizeButton = GetTemplateChild(MinimizeButtonName) as UniformIconButton;
 			if (_minimizeButton != null)
 				_minimizeButton.Click += MinimizeButtonOnClick;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using ImageOrganizer.Presentation;
 
 namespace ImageOrganizer.Organization
@@ -21,6 +22,6 @@ namespace ImageOrganizer.Organization
 		/// <summary>
 		/// A collection of tags that belon to the current image.
 		/// </summary>
-		IReadOnlyCollection<Tag> CurrentTags { get; }
+		ObservableCollection<Tag> CurrentTags { get; }
 	}
 }

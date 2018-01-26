@@ -78,7 +78,7 @@
 				</controls:UniformListBox.ItemTemplate>
 			</controls:UniformListBox>
 			<StackPanel Grid.Row="2"
-			            Margin="2,2,0,0">
+			            Margin="2,2,4,0">
 				<TextBlock Text="{x:Static properties:Resources.Tags}"/>
 				<Separator/>
 				<StackPanel Orientation="Horizontal">
@@ -92,7 +92,8 @@
 			<ScrollViewer Grid.Row="3"
 						  MinHeight="200"
 			              VerticalScrollBarVisibility="Auto">
-				<controls:UniformListBox ItemsSource="{Binding AllTags}">
+				<controls:UniformListBox ItemsSource="{Binding AllTags}"
+										 SelectedItem="{Binding SelectedTag}">
 					<controls:UniformListBox.ItemTemplate>
 						<DataTemplate>
 							<Grid>
@@ -101,11 +102,11 @@
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Text="{Binding Name}"/>
-								<i:Interaction.Triggers>
+								<!--<i:Interaction.Triggers>
 									<i:EventTrigger EventName="MouseDown">
 										<i:InvokeCommandAction Command="{Binding AddToImageCommand}"/>
 									</i:EventTrigger>
-								</i:Interaction.Triggers>
+								</i:Interaction.Triggers>-->
 							</Grid>
 						</DataTemplate>
 					</controls:UniformListBox.ItemTemplate>

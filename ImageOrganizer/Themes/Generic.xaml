@@ -6,7 +6,7 @@
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformListBox.xaml"/>
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformScrollBar.xaml"/>
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformButton.xaml"/>
-		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformWindowButton.xaml"/>
+		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformIconButton.xaml"/>
 		<ResourceDictionary Source="pack://application:,,,/ImageOrganizer;component/Presentation/Controls/UniformWindow.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 	
