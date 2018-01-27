@@ -45,7 +45,7 @@
 	<!--UniformListBox-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxBorderBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemSelectedBackgroundBrush}" Color="#FF003A65"/>
-	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemSelectedUnfocusedBackgroundBrush}" Color="#FF141414"/>
+	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemSelectedUnfocusedBackgroundBrush}" Color="#FF003A65"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformListBoxItemMouseOverBackgroundBrush}" Color="#FF2D2D2D"/>
 
 	<!--All Controls-->
@@ -55,8 +55,6 @@
 	<!--Misc Controls-->
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.GridSplitterBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ResizeGripBackgroundBrush}" Color="#FFF1F1F1"/>
-	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemHoveredBackgroundBrush}" Color="#FF2D2D2D"/>
-	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.ImageItemPressedBackgroundBrush}" Color="#FF003A65"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.UniformSeparatorBackgroundBrush}" Color="#FF141414"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TagRemoveButtonHoveredBackgroundBrush}" Color="#FF003258"/>
 	<SolidColorBrush x:Key="{x:Static themes:AssetResourceKeys.TagRemoveButtonPressedBackgroundBrush}" Color="#FF002B49"/>
@@ -95,6 +93,12 @@
 				<Setter Property="VerticalAlignment" Value="Stretch"/>
 			</Trigger>
 		</Style.Triggers>
+	</Style>
+	
+	<Style TargetType="ListBox">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
 	
 </ResourceDictionary>

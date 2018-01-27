@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using ImageOrganizer.Presentation;
 
 namespace ImageOrganizer.Organization
@@ -12,7 +11,7 @@ namespace ImageOrganizer.Organization
 		/// <summary>
 		/// Selects an image.
 		/// </summary>
-		void SelectImage(ImageItem item);
+		void ToggleImageSelection(ImageItem item, bool select);
 
 		/// <summary>
 		/// The currently selected image.

@@ -63,9 +63,6 @@
     <Compile Include="Controls\UniformButton.cs" />
     <Compile Include="Controls\UniformIconButton.cs" />
     <Compile Include="Controls\UniformWindow.cs" />
-    <Compile Include="ImageView.xaml.cs">
-      <DependentUpon>ImageView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Organization\IImageHost.cs" />
     <Compile Include="Organization\ImageCreationHelper.cs" />
     <Compile Include="Organization\ObservableImageCollection.cs" />
@@ -80,10 +77,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Themes\AssetResourceKeys.cs" />
     <Compile Include="Utilities\IOUtilities.cs" />
-    <Page Include="ImageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

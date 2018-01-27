@@ -28,8 +28,7 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="{x:Type ListBoxItem}"
-			TargetType="ListBoxItem">
+	<Style x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
 		<Setter Property="SnapsToDevicePixels" Value="true" />
 		<Setter Property="OverridesDefaultStyle" Value="true" />
 		<Setter Property="Background" Value="Transparent" />
@@ -37,6 +36,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ListBoxItem">
 					<Border Padding="2"
+							Width="{TemplateBinding Width}"
+							Height="{TemplateBinding Height}"
 							x:Name="Border"
 							SnapsToDevicePixels="true"
 							BorderThickness="{TemplateBinding BorderThickness}"

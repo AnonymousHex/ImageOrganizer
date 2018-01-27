@@ -13,7 +13,7 @@ namespace ImageOrganizer.Presentation
 		private readonly IImageHost _host;
 		private ImageSource _thumb;
 		private readonly string _filePath;
-		private Command _selectCommand;
+		private bool _isSelected;
 
 		/// <summary>
 		/// 
@@ -86,9 +86,14 @@ namespace ImageOrganizer.Presentation
 		/// <summary>
 		/// 
 		/// </summary>
-		public Command SelectCommand
+		public bool IsSelected
 		{
-			get { return _selectCommand ?? (_selectCommand = new Command(Select)); }
+			get { return _isSelected; }
+			set
+			{
+				Set("IsSelected", ref _isSelected, value);
+				_host.ToggleImageSelection(this, value);
+			}
 		}
 
 		/// <summary>
@@ -113,14 +118,6 @@ namespace ImageOrganizer.Presentation
 		public string FilePath
 		{
 			get { return _filePath; }
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		void Select()
-		{
-			_host.SelectImage(this);
 		}
 	}
 }

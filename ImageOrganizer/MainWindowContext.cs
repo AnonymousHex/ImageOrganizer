@@ -30,6 +30,8 @@ namespace ImageOrganizer
 
 		//dictionary of tag names with lists of filepaths per tag
 		private readonly Dictionary<string, List<Tag>> _imageTags = new Dictionary<string, List<Tag>>();
+
+		//global tag collection
 		private readonly ObservableCollection<Tag> _allTags = new ObservableCollection<Tag>();
 		private Tag _selectedTag;
 		private ObservableCollection<Tag> _currentTags;
@@ -41,6 +43,7 @@ namespace ImageOrganizer
 		private string _tagSearch;
 		private ImageItem _selectedImage;
 		private ImageSource _selectedImageSource;
+		private List<ImageItem> _selectedItems = new List<ImageItem>();
 
 		private double _maxVerticalOffset;
 
@@ -141,26 +144,41 @@ namespace ImageOrganizer
 			get { return _folders; }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public Command BrowseCommand
 		{
 			get { return _browseCommand ?? (_browseCommand = new Command(BrowseForFolder)); }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public Command NewTagCommand
 		{
 			get { return _newTagCommand ?? (_newTagCommand = new Command(MakeNewTag, CanMakeNewTag)); }
 		}
-
+		
+		/// <summary>
+		/// 
+		/// </summary>
 		public Command TestCrashCommand
 		{
 			get { return _testCrashCommand ?? (_testCrashCommand = new Command(TestCrash)); }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public Command<double> HandleScrollChangedCommand
 		{
 			get { return _handleScrollChangedCommand ?? (_handleScrollChangedCommand = new Command<double>(HandleScrollChanged)); }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		private static void TestCrash()
 		{
 			throw new Exception("This is a test of the crash handling functionality.");
@@ -227,6 +245,15 @@ namespace ImageOrganizer
 		/// <summary>
 		/// 
 		/// </summary>
+		public List<ImageItem> SelectedImages
+		{
+			get { return _selectedItems; }
+			set { Set("SelectedImages", ref _selectedItems, value); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public ImageSource SelectedImageSource
 		{
 			get { return _selectedImageSource; }
@@ -246,7 +273,6 @@ namespace ImageOrganizer
 				return;
 
 			FolderPath = dlg.FolderName;
-			RaiseCanChangeImageChanged();
 		}
 
 		/// <summary>
@@ -378,14 +404,12 @@ namespace ImageOrganizer
 		void HandleScrollChanged(double verticalOffset)
 		{
 			//TODO image items should have placeholder thumbnail or color before thumbnail has been generated.
-			//TODO save out grid splitter configurations.
 
 			if (_isCreatingImages || _enumerator == null)
 				return;
 
 			if (verticalOffset < 0.0 || verticalOffset < _maxVerticalOffset)
 				return;
-
 
 			_maxVerticalOffset = verticalOffset;
 
@@ -396,33 +420,46 @@ namespace ImageOrganizer
 		/// 
 		/// </summary>
 		/// <param name="item"></param>
-		public void SelectImage(ImageItem item)
+		/// <param name="select"></param>
+		public void ToggleImageSelection(ImageItem item, bool select)
 		{
 			//save the old image's tags.
-			if (_currentTags != null)
+			if (_currentTags != null && _selectedImage != null)
 				_imageTags[_selectedImage.FilePath] = _currentTags.ToList();
 
-			SelectedImage = item;
-			SelectedImageSource = new BitmapImage(new Uri(item.FilePath));
+			if (select)
+			{
+				_selectedItems.Add(item);
+				SelectedImage = item;
+			}
+			else
+			{
+				_selectedItems.Remove(item);
+				if (_selectedItems.Any())
+				{
+					SelectedImage =  _selectedItems.Last();
+				}
+				else
+				{
+					SelectedImage = null;
+					SelectedImageSource = null;
+				}
+			}
 
-			if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
-				_imageTags[_selectedImage.FilePath] = new List<Tag>();
+			if (_selectedImage != null)
+			{
+				SelectedImageSource = new BitmapImage(new Uri(_selectedImage.FilePath));
+				if (_imageTags.ContainsKey(_selectedImage.FilePath) == false)
+					_imageTags[_selectedImage.FilePath] = new List<Tag>();
 
-			_currentTags = new ObservableCollection<Tag>(_imageTags[_selectedImage.FilePath]);
-			foreach (var tag in _currentTags)
-				RegisterTagEvents(tag, true);
+				_currentTags = new ObservableCollection<Tag>(_imageTags[_selectedImage.FilePath]);
+				foreach (var tag in _currentTags)
+					RegisterTagEvents(tag, true);
+			}
+			else
+				_currentTags = null;
 
 			RaisePropertyChanged("CurrentTags");
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		void RaiseCanChangeImageChanged()
-		{
-			RaisePropertyChanged("LeftCommand");
-			RaisePropertyChanged("RightCommand");
-			RaisePropertyChanged("CurrentImage");
 		}
 
 		/// <summary>
@@ -467,6 +504,14 @@ namespace ImageOrganizer
 				return;
 
 			CurrentTags.Add(tag);
+			foreach (var image in _selectedItems)
+			{
+				if (image == SelectedImage)
+					continue;
+
+				_imageTags[image.FilePath].Add(tag);
+			}
+
 			RegisterTagEvents(tag, true);
 		}
 

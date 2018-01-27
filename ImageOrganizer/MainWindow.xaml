@@ -11,7 +11,7 @@
         Title="{x:Static properties:Resources.ImageOrganizer}" 
 		Height="880"
 		Width="1000">
-	
+
 	<Grid x:Name="RootGrid">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="44"/>
@@ -113,7 +113,7 @@
 				</controls:UniformListBox>
 			</ScrollViewer>
 		</Grid>
-		
+
 		<GridSplitter Grid.Column="0"
 					  Grid.Row="0"
 		              ResizeDirection="Columns"
@@ -121,23 +121,32 @@
 					  DragCompleted="Column1_OnDragCompleted"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto"
+					  HorizontalScrollBarVisibility="Disabled"
 					  Name="ScrollViewer"
 		              Grid.Column="1"
 		              Grid.Row="1">
-			<ItemsControl ItemsSource="{Binding Files}">
-				<ItemsControl.ItemsPanel>
+			<ListBox ItemsSource="{Binding Files}"
+			         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					 SelectionMode="Multiple">
+				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel ItemWidth="112"
-						           ItemHeight="120"/>
+						           ItemHeight="120"
+								   IsItemsHost="True"/>
 					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
+				</ListBox.ItemsPanel>
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+						<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+					</Style>
+				</ListBox.ItemContainerStyle>
+				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<presentation:ImageItemView Margin="5"/>
 					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-			
+				</ListBox.ItemTemplate>
+			</ListBox>
+
 			<i:Interaction.Triggers>
 				<presentation:RoutedEventTrigger RoutedEvent="ScrollViewer.ScrollChanged">
 					<i:InvokeCommandAction Command="{Binding HandleScrollChangedCommand}" CommandParameter="{Binding VerticalOffset, ElementName=ScrollViewer}"/>
@@ -150,11 +159,11 @@
 					  ResizeDirection="Columns"
 		              Grid.RowSpan="2"
 					  DragCompleted="Column2_OnDragCompleted"/>
-		
+
 		<Grid Grid.Column="2"
 		      Grid.Row="1">
 			<Grid.RowDefinitions>
-				<RowDefinition/>
+				<RowDefinition MinHeight="200"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition MinHeight="250"/>
 			</Grid.RowDefinitions>
@@ -165,7 +174,7 @@
 			        Source="{Binding SelectedImageSource}"/>
 			<GridSplitter Grid.Row="1"
 						  ResizeDirection="Rows"/>
-			
+
 			<ItemsControl ItemsSource="{Binding CurrentTags}"
 			              Grid.Row="2">
 				<ItemsControl.ItemsPanel>
@@ -180,7 +189,6 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</Grid>
-		
-	</Grid>
-    </controls:UniformWindow>
 
+	</Grid>
+</controls:UniformWindow>
